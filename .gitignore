@@ -22,3 +22,61 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+
+# IntelliJ IDEA specific files
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Ignore IntelliJ IDEA's workspace.xml file, which stores user-specific settings
+workspace.xml
+
+# Ignore the target directory (Maven) or build directory (Gradle)
+target/
+build/
+
+# Ignore Maven's local repository
+.mvn/
+.mvn/wrapper/maven-wrapper.jar
+!/.mvn/wrapper/maven-wrapper.properties
+
+# Ignore Gradle files
+.gradle/
+!gradle-wrapper.jar
+
+# Ignore project build output
+out/
+bin/
+
+
+# Ignore temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Ignore operating system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore Eclipse project files (falls das Projekt auch mit Eclipse verwendet wird)
+.project
+.classpath
+.settings/
+
+# Ignore generated coverage reports
+coverage/
+*.ec
+*.exec
+*.em
+
+# Ignore IntelliJ IDEA specific test result files
+/test-result.xml
+*.test-results/
+
+
+# Ignore application config files that should not be versioned
+*.env
