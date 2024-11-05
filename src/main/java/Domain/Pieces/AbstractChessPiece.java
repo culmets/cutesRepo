@@ -1,8 +1,10 @@
-package Domain;
+package Domain.Pieces;
 
-public abstract class AbstractChessPiece implements ChessPiece{
+import Domain.Board.Position;
 
-    private String color;
+public abstract class AbstractChessPiece implements ChessPiece {
+
+    private final String color;
 
     private Position position;
 
@@ -22,4 +24,6 @@ public abstract class AbstractChessPiece implements ChessPiece{
     public void setPosition(Position newPosition) {
         this.position = newPosition;
     }
+
+    public abstract String getSymbol();
 }
