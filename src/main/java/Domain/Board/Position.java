@@ -1,4 +1,4 @@
-package Domain;
+package Domain.Board;
 
 //converted to record class
 public record Position(int x, int y) {

@@ -1,4 +1,4 @@
-package Domain;
+package Domain.Board;
 
 public class Move {
 

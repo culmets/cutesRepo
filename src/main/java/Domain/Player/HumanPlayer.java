@@ -1,8 +1,10 @@
-package Domain;
+package Domain.Player;
 
 import Application.Controller;
+import Domain.Board.Board;
+import Domain.Board.Position;
 
-public class HumanPlayer extends Player{
+public class HumanPlayer extends Player {
 
     public HumanPlayer(String name, String color) {
         super(name, color);

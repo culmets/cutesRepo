@@ -1,6 +1,7 @@
-package Domain;
+package Domain.Player;
 
 import Application.Controller;
+import Domain.Board.Board;
 
 public abstract class Player {
 
