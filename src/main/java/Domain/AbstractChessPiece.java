@@ -2,20 +2,24 @@ package Domain;
 
 public abstract class AbstractChessPiece implements ChessPiece{
 
-    protected String name;
+    private String color;
 
-    protected String color;
+    private Position position;
 
-    public AbstractChessPiece(String color, String name) {
+    public AbstractChessPiece(String color, Position position) {
         this.color = color;
-        this.name = name;
+        this.position = position;
     }
 
     public String getColor() {
         return color;
     }
 
-    public String getName() {
-        return name;
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position newPosition) {
+        this.position = newPosition;
     }
 }
