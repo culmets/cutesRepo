@@ -1,28 +1,15 @@
 package Domain;
 
+//converted to record class
+public record Position(int x, int y) {
 
-public class Position {
-
-    private final int x;
-    private final int y;
-
-    public Position(int x, int y) {
+    public Position {
         if (x < 0 || x > 7 || y < 0 || y > 7) {
             throw new IllegalArgumentException("Ungültige Position: " + x + ", " + y);
         }
-        this.x = x;
-        this.y = y;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public boolean equals(Position otherPiece){
+    public boolean equals(Position otherPiece) {
         return this.x == otherPiece.x && this.y == otherPiece.y;
     }
 
