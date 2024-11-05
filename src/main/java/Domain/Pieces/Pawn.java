@@ -20,6 +20,6 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
     */
     @Override
     public String getSymbol() {
-        return "";
+        return (getColor().equals("white")) ? " P" : " p";
     }
 }
