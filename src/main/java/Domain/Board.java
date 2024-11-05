@@ -8,7 +8,7 @@ public class Board {
         this.board = new String[8][8];
         initBoard();
     }
-
+//je nachdem wer spieler ist (schwarz oder weiß) board anderherum ausgeben
     private void initBoard() {
         board[0] = new String[] {"r", "n", "b", "q", "k", "b", "n", "r"};
         board[1] = new String[] {"p", "p", "p", "p", "p", "p", "p", "p"};
@@ -22,8 +22,11 @@ public class Board {
         }
     }
 
-    public void printBoard(){
-        
+    public void movePiece(Position from, Position to){
+
     }
 
+    public void printBoard(){
+
+    }
 }
