@@ -3,6 +3,8 @@ package Domain.Pieces;
 import Domain.Board.Board;
 import Domain.Board.Position;
 
+import java.util.List;
+
 public class Pawn extends AbstractChessPiece implements ChessPiece {
     public Pawn(String color, Position position) {
         super(color, position);
@@ -12,12 +14,12 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
     public boolean isMoveValid(Position moveFRom, Position moveTo, Board board) {
         return false;
     }
-    /*
-        @Override
-        public List<Position> getValidMoves(Board board) {
-            return List.of();
-        }
-    */
+
+    @Override
+    public List<Position> getValidMoves(Board board) {
+        return List.of();
+    }
+
     @Override
     public String getSymbol() {
         return (getColor().equals("white")) ? " P" : " p";
