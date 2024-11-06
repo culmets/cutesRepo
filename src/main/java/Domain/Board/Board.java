@@ -67,7 +67,7 @@ public class Board {
     }
 
     public void printBoard() {
-        System.out.println("   A  B  C  D  E  F  G  H");
+        System.out.println("    A  B  C  D  E  F  G  H");
         System.out.println(" +------------------------+");
 
         for (int row = 7; row >= 0; row--) {
@@ -85,11 +85,58 @@ public class Board {
             System.out.println("| " + (row + 1));
         }
         System.out.println(" +------------------------+");
-        System.out.println("   A  B  C  D  E  F  G  H");
+        System.out.println("    A  B  C  D  E  F  G  H");
     }
 
     public static void main(String[] args) {
         Board board = new Board();
         board.printBoard();
+    }
+    public boolean isWithinBoard(Position newPos) {
+        return newPos.row() >= 0 && newPos.row() <= 7 && newPos.col() >= 0 && newPos.col() <= 7;
+    }
+
+
+    //prüfen ob der König einer Farbe im Schach steht indem alle Pieces der anderen Farbe gecheckt werden
+    public boolean isKingInCheck(String color) {
+        Position kingPosition = findKingPosition(color);
+        for (AbstractChessPiece piece : board.values()) {
+            if (!piece.getColor().equals(color) && piece.getValidMoves(this).contains(kingPosition)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // sucht die Figur in der Map die ein König ist und die richtige Farbe hat
+    private Position findKingPosition(String color) {
+        for (Map.Entry<Position, AbstractChessPiece> entry : board.entrySet()) {
+            if (entry.getValue() instanceof King && entry.getValue().getColor().equals(color)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+
+    // ob zwischen start+1 und end-1 eine figur steht
+    //funktioninert das auch für die queen?
+    public boolean isPathFree(Position start, Position end) {
+        // in welcher Richtung ist die Änderung -> .compare() gibt 1, 0, -1 zurück
+        int rowDiff = Integer.compare(end.row(), start.row()); // (2,4)
+        int colDiff = Integer.compare(end.col(), start.col()); // (4,5)
+        // ersten Schritt in richtige Richtung(en)
+        int currentRow = start.row() + rowDiff;
+        int currentCol = start.col() + colDiff;
+
+        while (currentRow != end.row() || currentCol != end.col()) {
+            Position currentPosition = new Position(currentRow, currentCol);
+            if (getPieceAt(currentPosition) != null) {
+                return false; // wenn was im weg
+            }
+            currentRow += rowDiff;
+            currentCol += colDiff;
+        }
+        return true; // wenn nichts im weg
     }
 }
