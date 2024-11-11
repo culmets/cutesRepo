@@ -1,6 +1,7 @@
 package Application;
 
 import Domain.Board.Position;
+import Domain.Exceptions.InvalidPositionFormatException;
 
 import java.util.Scanner;
 
@@ -19,21 +20,42 @@ public class CLIController implements Controller{
 
     @Override
     public Position getMoveStart() {
-        System.out.print("Geben Sie die Startposition ein (z. B. e2): ");
-        String input = scanner.nextLine();
-        return parsePosition(input);
+        while (true) {
+            try {
+                System.out.print("Geben Sie die Startposition ein (z. B. e2): ");
+                String input = scanner.nextLine();
+                return parsePosition(input);
+            } catch (InvalidPositionFormatException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     @Override
     public Position getMoveEnd() {
-        System.out.print("Geben Sie die Zielposition ein (z. B. e4): ");
-        String input = scanner.nextLine();
-        return parsePosition(input);
+        while (true) {
+            try {
+                System.out.print("Geben Sie die Zielposition ein (z. B. e4): ");
+                String input = scanner.nextLine();
+                return parsePosition(input);
+            } catch (InvalidPositionFormatException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     private Position parsePosition(String input) {
-        int col = input.charAt(0) - 'a'; //zieht a (97) von anderem char ab
-        int row = Character.getNumericValue(input.charAt(1)) - 1; // zahl minus 1 weil von 0 gezählt wird
+        if (input.length() != 2) {
+            throw new InvalidPositionFormatException("Die Eingabe muss genau zwei Zeichen lang sein (z. B. 'e2').");
+        }
+        char colChar = input.charAt(0);
+        char rowChar = input.charAt(1);
+
+        if (colChar < 'a' || colChar > 'h' || rowChar < '1' || rowChar > '8') {
+            throw new InvalidPositionFormatException("Ungültiges Positionsformat: " + input + ". Geben Sie eine Position im Format 'a1' bis 'h8' ein.");
+        }
+        int col = colChar - 'a';
+        int row = Character.getNumericValue(rowChar) - 1;
         return new Position(row, col);
     }
 
