@@ -1,4 +1,4 @@
-package Domain;
+package Domain.Exceptions;
 
 public class KingNotFoundException extends RuntimeException {
 
