@@ -53,7 +53,8 @@ public class Rook extends AbstractChessPiece implements ChessPiece {
                 validMoves.add(newPosition); //pos war frei
             }
         }
-
+        //move ist endpos -> prüfung ob endpos könig in schach stellt
+        validMoves.removeIf(move -> !board.isKingSafeAfterMove(this.getPosition(), move, this.getColor()));
         return validMoves;
     }
 }

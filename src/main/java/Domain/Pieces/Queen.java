@@ -57,6 +57,7 @@ public class Queen extends AbstractChessPiece implements ChessPiece{
                 validMoves.add(newPosition);
             }
         }
+        validMoves.removeIf(move -> !board.isKingSafeAfterMove(this.getPosition(), move, this.getColor()));
         return validMoves;
     }
 

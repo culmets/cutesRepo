@@ -49,6 +49,8 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
                 !board.getPieceAt(captureRight).getColor().equals(this.getColor())) {
             validMoves.add(captureRight);
         }
+        validMoves.removeIf(move -> !board.isKingSafeAfterMove(this.getPosition(), move, this.getColor()));
+
         return validMoves;
     }
 

@@ -21,6 +21,8 @@ public class King extends AbstractChessPiece implements ChessPiece{
         return false;
     }
 
+    //rochade implementieren
+
     @Override
     public List<Position> getValidMoves(Board board) {
         List<Position> validMoves = new ArrayList<>();
@@ -47,6 +49,7 @@ public class King extends AbstractChessPiece implements ChessPiece{
                 }
             }
         }
+        validMoves.removeIf(move -> !board.isKingSafeAfterMove(this.getPosition(), move, this.getColor()));
         return validMoves;
     }
 }
