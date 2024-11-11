@@ -6,7 +6,7 @@ import Domain.Board.Position;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Rook extends AbstractChessPiece implements ChessPiece{
+public class Rook extends AbstractChessPiece implements ChessPiece {
     public Rook(String color, Position position) {
         super(color, position);
     }
@@ -21,27 +21,39 @@ public class Rook extends AbstractChessPiece implements ChessPiece{
         return getValidMoves(board).contains(moveTo);
     }
 
-    @Override
     public List<Position> getValidMoves(Board board) {
         List<Position> validMoves = new ArrayList<>();
-        int[][] moves = {
-                {1, 0}, {2, 0}, {3, 0}, {4, 0}, {5, 0}, {6, 0}, {7, 0},
-                {0, 1}, {0, 2}, {0, 3}, {0, 4}, {0, 5}, {0, 6}, {0, 7}
+        int[][] directions = {
+                {1, 0},
+                {-1, 0},
+                {0, 1},
+                {0, -1}
         };
 
-        for (int[] move : moves) {
-            int newRow = getPosition().row() + move[0];
-            int newCol = getPosition().col() + move[1];
-            Position newPosition = new Position(newRow, newCol);
-//ist die neue Position noch aufm board und steht wenn dann ein gegnerisches Piece darauf
-            if (board.isWithinBoard(newPosition) && (board.getPieceAt(newPosition) == null ||
-                    !board.getPieceAt(newPosition).getColor().equals(this.getColor()))) {
-                // wenn zwischen der figur und dem Ziel noch etwas steht -> nicht durchlaufen
-                if(board.isPathFree(getPosition(), newPosition)){
-                    validMoves.add(newPosition);
+        for (int[] direction : directions) {
+            int row = getPosition().row();
+            int col = getPosition().col();
+            // Gehe in der aktuellen Richtung, bis wir außerhalb des Boards sind oder auf ein Hindernis stoßen
+            while (true) {
+                row += direction[0];
+                col += direction[1];
+                Position newPosition = new Position(row, col);
+                if (!board.isWithinBoard(newPosition)) {
+                    break;
                 }
+                // wenn piece auf neuer pos
+                AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
+                if (pieceAtNewPosition != null) {
+                    //
+                    if (!pieceAtNewPosition.getColor().equals(this.getColor())) {
+                        validMoves.add(newPosition); // wenn gegner draufsteht, kann man schlagen
+                    }
+                    break; //pos ist beleg und richtung damit fertig geprüft
+                }
+                validMoves.add(newPosition); //pos war frei
             }
         }
+
         return validMoves;
     }
 }
