@@ -1,6 +1,6 @@
 package Domain.Board;
 
-import Domain.KingNotFoundException;
+import Domain.Exceptions.KingNotFoundException;
 import Domain.Pieces.*;
 
 import java.util.ArrayList;
@@ -16,7 +16,8 @@ public class Board {
         this.board = new HashMap<>();
         initializePieces();
     }
-//spieler kann nur seine pieces bewegen implementieren?
+
+    //spieler kann nur seine pieces bewegen implementieren?
     private void initializePieces() {
         board.put(new Position(0, 0), new Rook("white", new Position(0, 0)));
         board.put(new Position(0, 1), new Knight("white", new Position(0, 1)));
@@ -135,7 +136,6 @@ public class Board {
     }
 
 
-
     // sucht die Figur in der Map die ein König ist und die richtige Farbe hat
     //hier null vermeiden
     private Position findKingPosition(String color) {
@@ -149,7 +149,7 @@ public class Board {
 
 
     // ob zwischen start+1 und end-1 eine figur steht
-    public boolean isPathFree(Position start, Position end) {
+    public boolean isPathClear(Position start, Position end) {
         // in welcher Richtung ist die Änderung -> .compare() gibt 1, 0, -1 zurück
         int rowDiff = Integer.compare(end.row(), start.row()); // (2,4)
         int colDiff = Integer.compare(end.col(), start.col()); // (4,5)
@@ -204,5 +204,19 @@ public class Board {
         return pieces;
     }
 
+    public boolean isValidMove(Position start, Position end, String color) {
+        AbstractChessPiece piece = getPieceAt(start);
+        if (piece == null || !piece.getColor().equals(color)) {
+            return false; // keine Figur auf startpos oder andersfarbige figur
+        }
+        if (!isWithinBoard(end)) {
+            return false;
+        }
+        List<Position> validMoves = piece.getValidMoves(this);
+        if (!validMoves.contains(end)) {
+            return false; // zug ungültig
+        }
+        return isKingSafeAfterMove(start, end, color); // letzte prüfung, ob könig im schach steht danach
+    }
 
 }
