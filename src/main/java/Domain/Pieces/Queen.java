@@ -47,14 +47,20 @@ public class Queen extends AbstractChessPiece implements ChessPiece{
                 if (!board.isWithinBoard(newPosition)) {
                     break;
                 }
-                AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
-                if (pieceAtNewPosition != null) {
-                    if (!pieceAtNewPosition.getColor().equals(this.getColor())) {
+
+                if (board.isPathClear(getPosition(), newPosition)) {
+                    AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
+                    if (pieceAtNewPosition == null) {
                         validMoves.add(newPosition);
+                    } else if (!pieceAtNewPosition.getColor().equals(this.getColor())) {
+                        validMoves.add(newPosition);
+                        break;
+                    } else {
+                        break;
                     }
+                } else {
                     break;
                 }
-                validMoves.add(newPosition);
             }
         }
         validMoves.removeIf(move -> !board.isKingSafeAfterMove(this.getPosition(), move, this.getColor()));

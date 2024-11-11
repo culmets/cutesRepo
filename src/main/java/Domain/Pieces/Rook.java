@@ -33,7 +33,6 @@ public class Rook extends AbstractChessPiece implements ChessPiece {
         for (int[] direction : directions) {
             int row = getPosition().row();
             int col = getPosition().col();
-            // Gehe in der aktuellen Richtung, bis wir außerhalb des Boards sind oder auf ein Hindernis stoßen
             while (true) {
                 row += direction[0];
                 col += direction[1];
@@ -41,14 +40,18 @@ public class Rook extends AbstractChessPiece implements ChessPiece {
                 if (!board.isWithinBoard(newPosition)) {
                     break;
                 }
-                // wenn piece auf neuer pos
-                AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
-                if (pieceAtNewPosition != null) {
-                    //
-                    if (!pieceAtNewPosition.getColor().equals(this.getColor())) {
-                        validMoves.add(newPosition); // wenn gegner draufsteht, kann man schlagen
+                if (board.isPathClear(getPosition(), newPosition)) {
+                    AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
+                    if (pieceAtNewPosition == null) { //wenn keine figur auf neuen feld steht
+                        validMoves.add(newPosition);
+                    } else if (!pieceAtNewPosition.getColor().equals(this.getColor())) { // wenn gegnerische figur auf feld steht
+                        validMoves.add(newPosition); // gegnerische figur schlagen
+                        break;
+                    } else {
+                        break; // eigene figur blockiert feld
                     }
-                    break; //pos ist beleg und richtung damit fertig geprüft
+                } else {
+                    break; // weg ist blockiert
                 }
                 validMoves.add(newPosition); //pos war frei
             }
