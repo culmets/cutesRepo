@@ -3,7 +3,9 @@ package Domain.Board;
 import Domain.KingNotFoundException;
 import Domain.Pieces.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Board {
@@ -165,4 +167,42 @@ public class Board {
         }
         return true; // wenn nichts im weg
     }
+
+    public boolean isCheckmate(String color) {
+        if (!isKingInCheck(color)) {
+            return false;
+        }
+        return !hasLegalMoves(color);
+    }
+
+    public boolean isStalemate(String color) {
+        if (isKingInCheck(color)) {
+            return false;
+        }
+        return !hasLegalMoves(color);
+    }
+
+    private boolean hasLegalMoves(String color) {
+        for (AbstractChessPiece piece : getPiecesByColor(color)) {
+            List<Position> validMoves = piece.getValidMoves(this);
+            for (Position move : validMoves) {
+                if (isKingSafeAfterMove(piece.getPosition(), move, color)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public List<AbstractChessPiece> getPiecesByColor(String color) {
+        List<AbstractChessPiece> pieces = new ArrayList<>();
+        for (AbstractChessPiece piece : board.values()) {
+            if (piece.getColor().equals(color)) {
+                pieces.add(piece);
+            }
+        }
+        return pieces;
+    }
+
+
 }
