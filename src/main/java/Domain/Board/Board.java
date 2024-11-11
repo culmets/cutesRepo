@@ -1,5 +1,6 @@
 package Domain.Board;
 
+import Domain.KingNotFoundException;
 import Domain.Pieces.*;
 
 import java.util.HashMap;
@@ -13,7 +14,7 @@ public class Board {
         this.board = new HashMap<>();
         initializePieces();
     }
-
+//spieler kann nur seine pieces bewegen implementieren?
     private void initializePieces() {
         board.put(new Position(0, 0), new Rook("white", new Position(0, 0)));
         board.put(new Position(0, 1), new Knight("white", new Position(0, 1)));
@@ -92,6 +93,8 @@ public class Board {
         Board board = new Board();
         board.printBoard();
     }
+
+
     public boolean isWithinBoard(Position newPos) {
         return newPos.row() >= 0 && newPos.row() <= 7 && newPos.col() >= 0 && newPos.col() <= 7;
     }
@@ -109,18 +112,18 @@ public class Board {
     }
 
     // sucht die Figur in der Map die ein König ist und die richtige Farbe hat
+    //hier null vermeiden
     private Position findKingPosition(String color) {
         for (Map.Entry<Position, AbstractChessPiece> entry : board.entrySet()) {
             if (entry.getValue() instanceof King && entry.getValue().getColor().equals(color)) {
                 return entry.getKey();
             }
         }
-        return null;
+        throw new KingNotFoundException(color);
     }
 
 
     // ob zwischen start+1 und end-1 eine figur steht
-    //funktioninert das auch für die queen?
     public boolean isPathFree(Position start, Position end) {
         // in welcher Richtung ist die Änderung -> .compare() gibt 1, 0, -1 zurück
         int rowDiff = Integer.compare(end.row(), start.row()); // (2,4)
