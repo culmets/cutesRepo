@@ -111,6 +111,29 @@ public class Board {
         return false;
     }
 
+    public boolean isKingSafeAfterMove(Position start, Position end, String color) {
+        AbstractChessPiece piece = getPieceAt(start);
+        AbstractChessPiece capturedPiece = getPieceAt(end);
+        // testet den Zug
+        board.put(end, piece);
+        board.remove(start);
+        piece.setPosition(end);
+
+        boolean kingIsSafe = !isKingInCheck(color);
+
+        // macht den Zug rückgängig
+        board.put(start, piece);
+        piece.setPosition(start);
+        if (capturedPiece != null) {
+            board.put(end, capturedPiece);
+        } else {
+            board.remove(end);
+        }
+        return kingIsSafe;
+    }
+
+
+
     // sucht die Figur in der Map die ein König ist und die richtige Farbe hat
     //hier null vermeiden
     private Position findKingPosition(String color) {
