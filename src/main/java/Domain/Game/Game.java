@@ -2,6 +2,7 @@ package Domain.Game;
 
 import Application.Controller;
 import Domain.Board.Board;
+import Domain.Board.Position;
 import Domain.Player.ComputerPlayer;
 import Domain.Player.HumanPlayer;
 import Domain.Player.Player;
@@ -28,19 +29,27 @@ public class Game implements InterfaceGame {
         Player currentPlayer = whitePlayer;
 
         while (!isGameOver) {
-            System.out.println("Current turn: " + currentPlayer.getName());
+            System.out.println("Zug für: " + currentPlayer.getName());
+            Position start, end;
+            boolean validMove = false;
 
-            if (currentPlayer instanceof HumanPlayer) {
-                ((HumanPlayer) currentPlayer).makeMove(board, controller);
-            } else {
-                ((ComputerPlayer) currentPlayer).makeMove(board, controller);
+            // wdh bis eingabe richtig
+            while (!validMove) {
+                start = controller.getMoveStart();
+                end = controller.getMoveEnd();
+
+                if (board.isValidMove(start, end, currentPlayer.getColor())) {
+                    board.movePiece(start, end);
+                    validMove = true;
+                } else {
+                    System.out.println("Ungültiger Zug. Bitte erneut versuchen.");
+                }
             }
-
             isGameOver = isGameOver();
             currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
         }
-
         controller.endGame();
+        System.out.println("Gewinner: " + getWinner());
     }
 
     @Override
