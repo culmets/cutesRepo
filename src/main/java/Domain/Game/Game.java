@@ -45,11 +45,29 @@ public class Game implements InterfaceGame {
 
     @Override
     public boolean isGameOver() {
+        if (board.isCheckmate(whitePlayer.getColor())) {
+            System.out.println("Schachmatt! " + blackPlayer.getName() + " hat gewonnen.");
+            return true;
+        }
+        if (board.isCheckmate(blackPlayer.getColor())) {
+            System.out.println("Schachmatt! " + whitePlayer.getName() + " hat gewonnen.");
+            return true;
+        }
+        if (board.isStalemate(whitePlayer.getColor()) || board.isStalemate(blackPlayer.getColor())) {
+            System.out.println("Patt! Das Spiel endet unentschieden.");
+            return true;
+        }
         return false;
     }
 
     @Override
     public String getWinner() {
-        return "";
+        if (board.isCheckmate(whitePlayer.getColor())) {
+            return blackPlayer.getName();
+        }
+        if (board.isCheckmate(blackPlayer.getColor())) {
+            return whitePlayer.getName();
+        }
+        return "Unentschieden";
     }
 }
