@@ -15,7 +15,7 @@ public class HumanPlayer extends Player {
         Position start = controller.getMoveStart();
         Position end = controller.getMoveEnd();
 
-        board.movePiece(start, end);
+        board.movePiece(start, end, color);
     }
 
 

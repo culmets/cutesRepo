@@ -9,7 +9,7 @@ public abstract class Player {
 
     protected String color;
 
-    public Player(String color, String name) {
+    public Player(String name, String color) {
         this.color = color;
         this.name = name;
     }

@@ -13,7 +13,7 @@ public class ComputerPlayer extends Player {
     @Override
     public void makeMove(Board board, Controller controller) {
         Move bestMove = calculateBestMove(board);
-        board.movePiece(bestMove.getFrom(), bestMove.getTo());
+        board.movePiece(bestMove.getFrom(), bestMove.getTo(), color);
     }
 
 
