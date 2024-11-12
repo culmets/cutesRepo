@@ -3,16 +3,14 @@ package Domain.Game;
 import Application.Controller;
 import Domain.Board.Board;
 import Domain.Board.Position;
-import Domain.Player.ComputerPlayer;
-import Domain.Player.HumanPlayer;
 import Domain.Player.Player;
 
 public class Game implements InterfaceGame {
 
-    private Player whitePlayer;
-    private Player blackPlayer;
+    private final Player whitePlayer;
+    private final Player blackPlayer;
     private Board board;
-    private Controller controller;
+    private final Controller controller;
     private boolean isGameOver;
 
     public Game(Player whitePlayer, Player blackPlayer, Controller controller) {
@@ -35,11 +33,13 @@ public class Game implements InterfaceGame {
 
             // wdh bis eingabe richtig
             while (!validMove) {
+                board.printBoard();
                 start = controller.getMoveStart();
                 end = controller.getMoveEnd();
 
                 if (board.isValidMove(start, end, currentPlayer.getColor())) {
-                    board.movePiece(start, end);
+                    // hier try catch falls piece not movable
+                    board.movePiece(start, end, currentPlayer.getColor());
                     validMove = true;
                 } else {
                     System.out.println("Ungültiger Zug. Bitte erneut versuchen.");
