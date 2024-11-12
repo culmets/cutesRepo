@@ -17,6 +17,14 @@ public class Rook extends AbstractChessPiece implements ChessPiece {
     }
 
     @Override
+    public boolean canAttack(Position targetPosition, Board board) {
+        if (targetPosition.row() == getPosition().row() || targetPosition.col() == getPosition().col()) {
+            return board.isPathClear(getPosition(), targetPosition);
+        }
+        return false;
+    }
+
+    @Override
     public boolean isMoveValid(Position moveFrom, Position moveTo, Board board) {
         return getValidMoves(board).contains(moveTo);
     }
@@ -36,7 +44,13 @@ public class Rook extends AbstractChessPiece implements ChessPiece {
             while (true) {
                 row += direction[0];
                 col += direction[1];
+
+                if (row < 0 || row > 7 || col < 0 || col > 7) {
+                    break; // verlasse schleife wenn pos außerhalb von board
+                }
+
                 Position newPosition = new Position(row, col);
+
                 if (!board.isWithinBoard(newPosition)) {
                     break;
                 }

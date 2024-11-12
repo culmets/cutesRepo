@@ -17,6 +17,14 @@ public class King extends AbstractChessPiece implements ChessPiece{
     }
 
     @Override
+    public boolean canAttack(Position targetPosition, Board board) {
+        int rowDiff = Math.abs(targetPosition.row() - getPosition().row());
+        int colDiff = Math.abs(targetPosition.col() - getPosition().col());
+
+        return rowDiff <= 1 && colDiff <= 1;
+    }
+
+    @Override
     public boolean isMoveValid(Position moveFrom, Position moveTo, Board board) {
         return false;
     }
@@ -40,6 +48,11 @@ public class King extends AbstractChessPiece implements ChessPiece{
         for (int[] direction : directions) {
             int row = getPosition().row() + direction[0];
             int col = getPosition().col() + direction[1];
+
+
+            if (row < 0 || row > 7 || col < 0 || col > 7) {
+                break;
+            }
             Position newPosition = new Position(row, col);
 
             if (board.isWithinBoard(newPosition)) {

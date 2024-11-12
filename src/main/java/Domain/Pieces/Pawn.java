@@ -20,42 +20,57 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
     @Override
     public List<Position> getValidMoves(Board board) {
         List<Position> validMoves = new ArrayList<>();
-        boolean isPawnWhite = getColor().equals("white");
-        int direction = isPawnWhite ? 1 : -1; // weiße pawns gehen hoch (+1), schwarze runter (-1)
+        int direction = getColor().equals("white") ? 1 : -1;  //weiße bauern ziehen hoch und schwarze runter
+        int startRow = getColor().equals("white") ? 1 : 6;
+        int currentRow = getPosition().row();
+        int currentCol = getPosition().col();
+        int forwardRow = currentRow + direction;
 
-        // ein feld vorwärts
-        Position oneStepForward = new Position(getPosition().row() + direction, getPosition().col());
-        if (board.isWithinBoard(oneStepForward) && board.getPieceAt(oneStepForward) == null) {
-            validMoves.add(oneStepForward);
+        if (Position.isWithinBounds(forwardRow, currentCol)) {
+            Position forwardPosition = new Position(forwardRow, currentCol);
+            if (board.getPieceAt(forwardPosition) == null) { // feld ist frei
+                validMoves.add(forwardPosition);
 
-            // Bei startpos: zwei Felder vorwärts
-            int startRow = isPawnWhite ? 1 : 6;
-            Position twoStepsForward = new Position(getPosition().row() + 2 * direction, getPosition().col());
-            if (getPosition().row() == startRow && board.getPieceAt(twoStepsForward) == null) {
-                validMoves.add(twoStepsForward);
+                // zwei felder im ersten zug
+                if (currentRow == startRow) {
+                    int doubleForwardRow = currentRow + 2 * direction;
+                    if (Position.isWithinBounds(doubleForwardRow, currentCol)) {
+                        Position doubleForwardPosition = new Position(doubleForwardRow, currentCol);
+                        if (board.getPieceAt(doubleForwardPosition) == null) {
+                            validMoves.add(doubleForwardPosition);
+                        }
+                    }
+                }
             }
         }
-
         // diagonal schlagen
-        Position captureLeft = new Position(getPosition().row() + direction, getPosition().col() - 1);
-        Position captureRight = new Position(getPosition().row() + direction, getPosition().col() + 1);
+        int[] diagonalCols = {currentCol - 1, currentCol + 1}; // Links und rechts
 
-        if (board.isWithinBoard(captureLeft) && board.getPieceAt(captureLeft) != null &&
-                !board.getPieceAt(captureLeft).getColor().equals(this.getColor())) {
-            validMoves.add(captureLeft);
-        }
-
-        if (board.isWithinBoard(captureRight) && board.getPieceAt(captureRight) != null &&
-                !board.getPieceAt(captureRight).getColor().equals(this.getColor())) {
-            validMoves.add(captureRight);
+        for (int diagCol : diagonalCols) {
+            if (Position.isWithinBounds(forwardRow, diagCol)) {
+                Position diagonalPosition = new Position(forwardRow, diagCol);
+                AbstractChessPiece pieceAtDiagonal = board.getPieceAt(diagonalPosition);
+                // nur gegner schlagen
+                if (pieceAtDiagonal != null && !pieceAtDiagonal.getColor().equals(this.getColor())) {
+                    validMoves.add(diagonalPosition);
+                }
+            }
         }
         validMoves.removeIf(move -> !board.isKingSafeAfterMove(this.getPosition(), move, this.getColor()));
-
         return validMoves;
     }
 
     @Override
     public String getSymbol() {
         return (getColor().equals("white")) ? " P" : " p";
+    }
+
+    @Override
+    public boolean canAttack(Position targetPosition, Board board) {
+        int direction = getColor().equals("white") ? 1 : -1;
+        int targetRow = getPosition().row() + direction;
+
+        return (targetPosition.row() == targetRow) &&
+                (targetPosition.col() == getPosition().col() - 1 || targetPosition.col() == getPosition().col() + 1);
     }
 }

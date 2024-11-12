@@ -18,6 +18,17 @@ public class Queen extends AbstractChessPiece implements ChessPiece{
     }
 
     @Override
+    public boolean canAttack(Position targetPosition, Board board) {
+        int rowDiff = Math.abs(targetPosition.row() - getPosition().row());
+        int colDiff = Math.abs(targetPosition.col() - getPosition().col());
+
+        if (rowDiff == colDiff || targetPosition.row() == getPosition().row() || targetPosition.col() == getPosition().col()) {
+            return board.isPathClear(getPosition(), targetPosition);
+        }
+        return false;
+    }
+
+    @Override
     public boolean isMoveValid(Position moveFrom, Position moveTo, Board board) {
         return false;
     }
@@ -43,6 +54,10 @@ public class Queen extends AbstractChessPiece implements ChessPiece{
             while (true) {
                 row += direction[0];
                 col += direction[1];
+
+                if (row < 0 || row > 7 || col < 0 || col > 7) {
+                    break;
+                }
                 Position newPosition = new Position(row, col);
                 if (!board.isWithinBoard(newPosition)) {
                     break;
