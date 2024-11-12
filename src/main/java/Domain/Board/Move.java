@@ -2,8 +2,8 @@ package Domain.Board;
 
 public class Move {
 
-    private Position from;
-    private Position to;
+    private final Position from;
+    private final Position to;
 
     public Move(Position from, Position to) {
         this.from = from;
