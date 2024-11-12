@@ -51,7 +51,8 @@ public class Board {
         return board.get(position);
     }
 
-    public boolean movePiece(Position start, Position end) {
+    // hier noch schleife oder try catch machen?
+    public boolean movePiece(Position start, Position end, String color) {
         AbstractChessPiece piece = board.get(start);
 
         if (piece == null) {
@@ -59,7 +60,7 @@ public class Board {
             return false;
         }
 
-        if (!piece.isMoveValid(start, end, this)) {
+        if (!isValidMove(start, end, color)) {
             System.out.println("Invalid move for " + piece.getClass().getSimpleName());
             return false;
         }
@@ -104,7 +105,7 @@ public class Board {
 
 
     //prüfen ob der König einer Farbe im Schach steht indem alle Pieces der anderen Farbe gecheckt werden
-    public boolean isKingInCheck(String color) {
+  /*  public boolean isKingInCheck(String color) {
         Position kingPosition = findKingPosition(color);
         for (AbstractChessPiece piece : board.values()) {
             if (!piece.getColor().equals(color) && piece.getValidMoves(this).contains(kingPosition)) {
@@ -113,6 +114,12 @@ public class Board {
         }
         return false;
     }
+*/
+    public boolean isKingInCheck(String color) {
+        Position kingPosition = findKingPosition(color); // Position des Königs finden
+        return isPositionUnderThreat(kingPosition, color);
+    }
+
 
     public boolean isKingSafeAfterMove(Position start, Position end, String color) {
         AbstractChessPiece piece = getPieceAt(start);
@@ -122,7 +129,9 @@ public class Board {
         board.remove(start);
         piece.setPosition(end);
 
-        boolean kingIsSafe = !isKingInCheck(color);
+        Position kingPosition = piece instanceof King ? end : findKingPosition(color);
+        boolean kingIsSafe = !isPositionUnderThreat(kingPosition, color);
+     //   boolean kingIsSafe = !isKingInCheck(color);
 
         // macht den Zug rückgängig
         board.put(start, piece);
@@ -133,6 +142,15 @@ public class Board {
             board.remove(end);
         }
         return kingIsSafe;
+    }
+
+    private boolean isPositionUnderThreat(Position position, String color) {
+            for (AbstractChessPiece piece : getPiecesByColor((color.equals("white")) ? "black" : "white")) { // nur gegnerische farbe
+                if (piece.canAttack(position, this)) {
+                    return true;
+                }
+            }
+            return false;
     }
 
 
