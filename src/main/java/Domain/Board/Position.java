@@ -1,12 +1,18 @@
 package Domain.Board;
 
+import Domain.Exceptions.InvalidPositionFormatException;
+
 //converted to record class
 public record Position(int row, int col) {
 
     public Position {
         if (row < 0 || row > 7 || col < 0 || col > 7) {
-            throw new IllegalArgumentException("Ungültige Position: " + row + ", " + col);
+            throw new InvalidPositionFormatException("Ungültige Position: " + row + ", " + col);
         }
+    }
+
+    public static boolean isWithinBounds(int row, int col) {
+        return row >= 0 && row <= 7 && col >= 0 && col <= 7;
     }
 
     public boolean equals(Position otherPiece) {
