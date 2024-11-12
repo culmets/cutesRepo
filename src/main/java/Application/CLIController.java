@@ -56,6 +56,11 @@ public class CLIController implements Controller{
         }
         int col = colChar - 'a';
         int row = Character.getNumericValue(rowChar) - 1;
+
+        if (!Position.isWithinBounds(row, col)) {
+            throw new InvalidPositionFormatException("Position liegt außerhalb des Bretts: " + input);
+        }
+
         return new Position(row, col);
     }
 
