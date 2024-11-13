@@ -225,13 +225,16 @@ public class Board {
     public boolean isValidMove(Position start, Position end, String color) {
         AbstractChessPiece piece = getPieceAt(start);
         if (piece == null || !piece.getColor().equals(color)) {
+            System.out.println("Figur des Gegners ausgewählt.");
             return false; // keine Figur auf startpos oder andersfarbige figur
         }
         if (!isWithinBoard(end)) {
+            System.out.println("Zielposition ist nicht auf dem Brett");
             return false;
         }
         List<Position> validMoves = piece.getValidMoves(this);
         if (!validMoves.contains(end)) {
+            System.out.println("Zug ist ungültig. (König im Schach o. Ä.)");
             return false; // zug ungültig
         }
         return isKingSafeAfterMove(start, end, color); // letzte prüfung, ob könig im schach steht danach
