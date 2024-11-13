@@ -14,7 +14,7 @@ public class Knight extends AbstractChessPiece implements ChessPiece{
 
     @Override
     public String getSymbol() {
-        return (getColor().equals("white")) ? " K" : " k";
+        return (getColor().equals("white")) ? " S" : " s";
     }
 
     @Override
