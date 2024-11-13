@@ -12,6 +12,7 @@ public class Game implements InterfaceGame {
     private Board board;
     private final Controller controller;
     private boolean isGameOver;
+    private String winner = "Unentschieden";
 
     public Game(Player whitePlayer, Player blackPlayer, Controller controller) {
         this.whitePlayer = whitePlayer;
@@ -27,7 +28,7 @@ public class Game implements InterfaceGame {
         Player currentPlayer = whitePlayer;
 
         while (!isGameOver) {
-            System.out.println("Zug für: " + currentPlayer.getName());
+            System.out.println("Zug für: " + currentPlayer.getName() + ", " + currentPlayer.getColor());
             Position start, end;
             boolean validMove = false;
 
@@ -37,46 +38,39 @@ public class Game implements InterfaceGame {
                 start = controller.getMoveStart();
                 end = controller.getMoveEnd();
 
-                if (board.isValidMove(start, end, currentPlayer.getColor())) {
-                    // hier try catch falls piece not movable
-                    board.movePiece(start, end, currentPlayer.getColor());
+                if (board.movePiece(start, end, currentPlayer.getColor())) {
                     validMove = true;
-                } else {
-                    System.out.println("Ungültiger Zug. Bitte erneut versuchen.");
                 }
             }
-            isGameOver = isGameOver();
             currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
+            isGameOver = isGameOver(currentPlayer); // hier ist schon der nächste wieder dran bzw als current player markiert
         }
         controller.endGame();
-        System.out.println("Gewinner: " + getWinner());
     }
 
     @Override
-    public boolean isGameOver() {
-        if (board.isCheckmate(whitePlayer.getColor())) {
-            System.out.println("Schachmatt! " + blackPlayer.getName() + " hat gewonnen.");
+    public boolean isGameOver(Player currentPlayer) {
+        System.out.println("Checking for checkmate");
+        if (board.isCheckmate(currentPlayer.getColor())) {
+            Player winner = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer; // wenn currentPlayer schachmatt dann hat der andere nicht currentPlayer gewonnen
+            System.out.println("Schachmatt! " + winner + " hat gewonnen.");
+            setWinner(winner.getName());
             return true;
         }
-        if (board.isCheckmate(blackPlayer.getColor())) {
-            System.out.println("Schachmatt! " + whitePlayer.getName() + " hat gewonnen.");
-            return true;
-        }
-        if (board.isStalemate(whitePlayer.getColor()) || board.isStalemate(blackPlayer.getColor())) {
+
+        if (board.isStalemate(currentPlayer.getColor())) {
             System.out.println("Patt! Das Spiel endet unentschieden.");
             return true;
         }
         return false;
     }
 
+    public void setWinner(String winner) {
+        this.winner = winner;
+    }
+
     @Override
     public String getWinner() {
-        if (board.isCheckmate(whitePlayer.getColor())) {
-            return blackPlayer.getName();
-        }
-        if (board.isCheckmate(blackPlayer.getColor())) {
-            return whitePlayer.getName();
-        }
-        return "Unentschieden";
+        return winner;
     }
 }
