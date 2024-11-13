@@ -6,11 +6,13 @@ import Domain.Exceptions.InvalidPositionFormatException;
 import java.util.Scanner;
 
 public class CLIController implements Controller{
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     @Override
     public void startGame() {
         System.out.println("Willkommen zum Schachspiel!");
+        System.out.println("Großbuchstaben sind die weißen Figuren und Kleinbuchstaben die schwarzen.");
+        System.out.println("'S' bzw. 's' steht für Springer (Knight)");
     }
 
     @Override
@@ -60,7 +62,6 @@ public class CLIController implements Controller{
         if (!Position.isWithinBounds(row, col)) {
             throw new InvalidPositionFormatException("Position liegt außerhalb des Bretts: " + input);
         }
-
         return new Position(row, col);
     }
 
