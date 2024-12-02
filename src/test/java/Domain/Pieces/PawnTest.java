@@ -2,6 +2,7 @@ package Domain.Pieces;
 
 import Domain.Board.Board;
 import Domain.Board.Position;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +18,7 @@ public class PawnTest {
 
     @BeforeEach
     void setUp() {
-        board = new Board(true); //leeres board erstellen
+        board = new Board(true);
         whitePawn = new Pawn("white", new Position(1, 4)); // E2
         blackPawn = new Pawn("black", new Position(6, 4)); // E7
         AbstractChessPiece whiteKing = new King("white", new Position(0,4));
@@ -31,12 +32,12 @@ public class PawnTest {
     @Test
     void testNormalForwardMove() {
         List<Position> whiteMoves = whitePawn.getValidMoves(board);
-        assertTrue(whiteMoves.contains(new Position(2, 4)), "Weißer Bauer sollte ein Feld vorwärts ziehen können.");
-        assertTrue(whiteMoves.contains(new Position(3, 4)), "Weißer Bauer sollte zwei Felder vorwärts ziehen können.");
+        assertTrue(whiteMoves.contains(new Position(2, 4)), "Bauer sollte ein Feld vorwärts ziehen können.");
+        assertTrue(whiteMoves.contains(new Position(3, 4)), "Bauer sollte zwei Felder vorwärts ziehen können.");
 
         List<Position> blackMoves = blackPawn.getValidMoves(board);
-        assertTrue(blackMoves.contains(new Position(5, 4)), "Schwarzer Bauer sollte ein Feld vorwärts ziehen können.");
-        assertTrue(blackMoves.contains(new Position(4, 4)), "Schwarzer Bauer sollte zwei Felder vorwärts ziehen können.");
+        assertTrue(blackMoves.contains(new Position(5, 4)), "Bauer sollte ein Feld vorwärts ziehen können.");
+        assertTrue(blackMoves.contains(new Position(4, 4)), "Bauer sollte zwei Felder vorwärts ziehen können.");
     }
 
     @Test
@@ -45,8 +46,8 @@ public class PawnTest {
         board.placePiece(new Pawn("black", new Position(2, 5)), new Position(2, 5)); // F3
 
         List<Position> whiteMoves = whitePawn.getValidMoves(board);
-        assertTrue(whiteMoves.contains(new Position(2, 3)), "Weißer Bauer sollte die schwarze Figur auf D3 schlagen können.");
-        assertTrue(whiteMoves.contains(new Position(2, 5)), "Weißer Bauer sollte die schwarze Figur auf F3 schlagen können.");
+        assertTrue(whiteMoves.contains(new Position(2, 3)), "Bauer sollte die schwarze Figur auf D3 schlagen können.");
+        assertTrue(whiteMoves.contains(new Position(2, 5)), "Bauer sollte die schwarze Figur auf F3 schlagen können.");
     }
 
     @Test
@@ -55,8 +56,8 @@ public class PawnTest {
         board.placePiece(new Pawn("white", new Position(2, 5)), new Position(2, 5)); // F3
 
         List<Position> whiteMoves = whitePawn.getValidMoves(board);
-        assertFalse(whiteMoves.contains(new Position(2, 3)), "Weißer Bauer sollte keine eigene Figur auf D3 schlagen können.");
-        assertFalse(whiteMoves.contains(new Position(2, 5)), "Weißer Bauer sollte keine eigene Figur auf F3 schlagen können.");
+        assertFalse(whiteMoves.contains(new Position(2, 3)), "Bauer sollte keine eigene Figur auf D3 schlagen können.");
+        assertFalse(whiteMoves.contains(new Position(2, 5)), "Bauer sollte keine eigene Figur auf F3 schlagen können.");
     }
 
 
@@ -70,16 +71,25 @@ public class PawnTest {
         board.placePiece(new Pawn("white", new Position(2, 4)), new Position(2, 4));
 
         List<Position> whiteMoves = whitePawn.getValidMoves(board);
-        assertFalse(whiteMoves.contains(new Position(3, 4)), "Weißer Bauer sollte nicht zwei Felder ziehen können, wenn der Weg blockiert ist.");
-        assertFalse(whiteMoves.contains(new Position(2, 4)), "Weißer Bauer sollte nicht auf ein besetztes Feld ziehen können.");
+        assertFalse(whiteMoves.contains(new Position(3, 4)), "Bauer sollte nicht zwei Felder ziehen können, wenn der Weg blockiert ist.");
+        assertFalse(whiteMoves.contains(new Position(2, 4)), "Bauer sollte nicht auf ein besetztes Feld ziehen können.");
     }
     @Test
-    public void testKingSafety() {
+    void testKingSafety() {
+        board.placePiece(new Knight("black", new Position(2, 3)), new Position(2, 3));
+
+        List<Position> validMoves = whitePawn.getValidMoves(board);
+        assertFalse(validMoves.contains(new Position(2, 4)), "Bauer sollte keinen Zug machen, der den König im Schach lässt.");
+        assertTrue(validMoves.contains(new Position(2, 3)), "Bauer sollte den schwarzen Bauer diagonal schlagen können.");
+    }
+
+
+    @Test
+    public void testKingSafetyNoMovesAllowed() {
         board.placePiece(new Pawn("black", new Position(1, 3)), new Position(1, 3));
-        board.printBoard();
 
         List<Position> whiteMoves = whitePawn.getValidMoves(board);
-        assertTrue(whiteMoves.isEmpty(), "Weißer Bauer sollte keinen Zug machen, der den König im Schach lässt.");
+        assertTrue(whiteMoves.isEmpty(), "Bauer sollte keinen Zug machen, wenn der König im Schach steht.");
     }
 
 }
