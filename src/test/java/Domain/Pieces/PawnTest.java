@@ -20,8 +20,8 @@ public class PawnTest {
         board = new Board(true); //leeres board erstellen
         whitePawn = new Pawn("white", new Position(1, 4)); // weißer Bauer auf E2
         blackPawn = new Pawn("black", new Position(6, 4)); // schwarzer Bauer auf E7
-        AbstractChessPiece whiteKing = new King("white", new Position(0,5));
-        AbstractChessPiece blackKing = new King("black", new Position(7,4));
+        AbstractChessPiece whiteKing = new King("white", new Position(0,4));
+        AbstractChessPiece blackKing = new King("black", new Position(7,3));
         board.placePiece(whitePawn, new Position(1, 4));
         board.placePiece(blackPawn, new Position(6, 4));
         board.placePiece(whiteKing, new Position(0, 4));
@@ -70,12 +70,11 @@ public class PawnTest {
     }
     @Test
     public void testKingSafety() {
-        // Setze eine Bedrohung für den König
-        board.placePiece(new Pawn("black", new Position(6, 2)), new Position(6, 2)); // Schwarzer Bauer bedroht
-        //  board.placePiece(new King("white", new Position(1, 2)), new Position(1, 2)); // Weißer König auf C2
+        board.placePiece(new Pawn("black", new Position(1, 3)), new Position(1, 3)); // schwarzer Bauer bedroht König
+        board.printBoard();
 
         List<Position> whiteMoves = whitePawn.getValidMoves(board);
-        assertFalse(whiteMoves.contains(new Position(2, 4)), "Weißer Bauer sollte keinen Zug machen, der den König im Schach lässt.");
+        assertTrue(whiteMoves.isEmpty(), "Weißer Bauer sollte keinen Zug machen, der den König im Schach lässt.");
     }
 
 }
