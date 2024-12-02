@@ -17,6 +17,14 @@ public class Board {
         initializePieces();
     }
 
+    public Board(boolean empty) {
+        this.board = new HashMap<>();
+        if (!empty) {
+            initializePieces();
+        }
+    }
+
+
     //spieler kann nur seine pieces bewegen implementieren?
     private void initializePieces() {
         board.put(new Position(0, 0), new Rook("white", new Position(0, 0)));
@@ -200,6 +208,7 @@ public class Board {
         return !hasLegalMoves(color);
     }
 
+    //doppelprüfung auf isKingSafe
     private boolean hasLegalMoves(String color) {
         for (AbstractChessPiece piece : getPiecesByColor(color)) {
             List<Position> validMoves = piece.getValidMoves(this);
@@ -239,5 +248,14 @@ public class Board {
         }
         return isKingSafeAfterMove(start, end, color); // letzte prüfung, ob könig im schach steht danach
     }
+
+    public void placePiece(AbstractChessPiece piece, Position position) {
+        if (!isWithinBoard(position)) {
+            throw new IllegalArgumentException("Die Position " + position + " liegt außerhalb des Bretts.");
+        }
+        board.put(position, piece);
+        piece.setPosition(position);
+    }
+
 
 }
