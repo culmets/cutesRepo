@@ -24,8 +24,6 @@ public class Board {
         }
     }
 
-
-    //spieler kann nur seine pieces bewegen implementieren?
     private void initializePieces() {
         board.put(new Position(0, 0), new Rook("white", new Position(0, 0)));
         board.put(new Position(0, 1), new Knight("white", new Position(0, 1)));
@@ -124,7 +122,7 @@ public class Board {
     }
 */
     public boolean isKingInCheck(String color) {
-        Position kingPosition = findKingPosition(color); // Position des Königs finden
+        Position kingPosition = findKingPosition(color);
         return isPositionUnderThreat(kingPosition, color);
     }
 
@@ -162,8 +160,8 @@ public class Board {
     }
 
 
-    // sucht die Figur in der Map die ein König ist und die richtige Farbe hat
-    //hier null vermeiden
+    // sucht die Figur in der Map, die ein König ist und die richtige Farbe hat
+    // wird durch testen von anderen methoden mitgetestet -> kapselung bleibt erhalten
     private Position findKingPosition(String color) {
         for (Map.Entry<Position, AbstractChessPiece> entry : board.entrySet()) {
             if (entry.getValue() instanceof King && entry.getValue().getColor().equals(color)) {
@@ -186,12 +184,12 @@ public class Board {
         while (currentRow != end.row() || currentCol != end.col()) {
             Position currentPosition = new Position(currentRow, currentCol);
             if (getPieceAt(currentPosition) != null) {
-                return false; // wenn was im weg
+                return false; // wenn was im Weg
             }
             currentRow += rowDiff;
             currentCol += colDiff;
         }
-        return true; // wenn nichts im weg
+        return true; // wenn nichts im Weg
     }
 
     public boolean isCheckmate(String color) {
@@ -244,7 +242,7 @@ public class Board {
         List<Position> validMoves = piece.getValidMoves(this);
         if (!validMoves.contains(end)) {
             System.out.println("Zug ist ungültig. (König im Schach o. Ä.)");
-            return false; // zug ungültig
+            return false; // Zug ungültig
         }
         return isKingSafeAfterMove(start, end, color); // letzte prüfung, ob könig im schach steht danach
     }
