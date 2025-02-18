@@ -4,6 +4,10 @@ import Application.Controller;
 import Domain.Board.Board;
 import Domain.Board.Position;
 import Domain.Player.Player;
+import Persistence.FileGameRecordRepo;
+import Domain.Persistence.GameRecordRepo;
+
+import java.time.LocalDateTime;
 
 public class Game implements InterfaceGame {
 
@@ -13,11 +17,15 @@ public class Game implements InterfaceGame {
     private final Controller controller;
     private boolean isGameOver;
     private String winner = "Unentschieden";
+    private final MoveHistory moveHistory;
 
-    public Game(Player whitePlayer, Player blackPlayer, Controller controller) {
+    private int moveCounter = 0;
+
+    public Game(Player whitePlayer, Player blackPlayer, Controller controller, MoveHistory moveHistory) {
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
         this.controller = controller;
+        this.moveHistory = moveHistory;
         this.board = new Board();
         this.isGameOver = false;
     }
@@ -39,12 +47,20 @@ public class Game implements InterfaceGame {
                 end = controller.getMoveEnd();
 
                 if (board.movePiece(start, end, currentPlayer.getColor())) {
+                    //speichern des moves
+                    moveCounter++;
+                    Move move = new Move(start, end, moveCounter, MoveType.NORMAL); // nochmal schaune mit movetype, braucht man das?
+                    moveHistory.addMove(move);
+
                     validMove = true;
                 }
             }
             currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
             isGameOver = isGameOver(currentPlayer); // hier ist schon der nächste wieder dran bzw als current player markiert
         }
+        GameRecord record = new GameRecord(whitePlayer.getName(), blackPlayer.getName(), winner, moveHistory.getDemMoves(), LocalDateTime.now());
+        GameRecordRepo repository = new FileGameRecordRepo();
+        repository.saveGameRecord(record);
         controller.endGame();
     }
 
