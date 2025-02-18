@@ -1,4 +1,4 @@
-package Persistence;
+package Domain.Persistence;
 
 import Domain.Game.GameRecord;
 

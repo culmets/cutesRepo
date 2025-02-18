@@ -2,7 +2,7 @@ package Domain.Player;
 
 import Application.Controller;
 import Domain.Board.Board;
-import Domain.Board.Move;
+import Domain.Game.Move;
 
 public class ComputerPlayer extends Player {
 
@@ -13,7 +13,7 @@ public class ComputerPlayer extends Player {
     @Override
     public void makeMove(Board board, Controller controller) {
         Move bestMove = calculateBestMove(board);
-        board.movePiece(bestMove.getFrom(), bestMove.getTo(), color);
+        board.movePiece(bestMove.from(), bestMove.to(), color);
     }
 
 

@@ -1,6 +1,6 @@
-package Domain.Board;
+package Domain.Game;
 
-import Domain.Game.MoveType;
+import Domain.Board.Position;
 
 public record Move(Position from, Position to, int moveNumber, MoveType moveType) {
 

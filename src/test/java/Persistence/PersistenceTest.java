@@ -1,6 +1,7 @@
 package Persistence;
 
-import Domain.Board.Move;
+import Application.Leaderboard;
+import Domain.Game.Move;
 import Domain.Board.Position;
 import Domain.Game.GameRecord;
 import Domain.Game.MoveHistory;
