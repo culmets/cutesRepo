@@ -1,21 +1,13 @@
 package Domain.Board;
 
-public class Move {
+import Domain.Game.MoveType;
 
-    private final Position from;
-    private final Position to;
+public record Move(Position from, Position to, int moveNumber, MoveType moveType) {
 
-    public Move(Position from, Position to) {
-        this.from = from;
-        this.to = to;
-    }
-
-    public Position getFrom() {
-        return from;
-    }
-
-    public Position getTo() {
-        return to;
+    @Override
+    public String toString() {
+        // Beispiel: "e2,e4,1,normal"
+        return from.toString() + "," + to.toString() + "," + moveNumber + "," + moveType.toString();
     }
 }
 
