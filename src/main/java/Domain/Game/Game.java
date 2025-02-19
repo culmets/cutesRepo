@@ -8,6 +8,7 @@ import Persistence.FileGameRecordRepo;
 import Domain.Persistence.GameRecordRepo;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class Game implements InterfaceGame {
 
@@ -17,16 +18,18 @@ public class Game implements InterfaceGame {
     private final Controller controller;
     private boolean isGameOver;
     private String winner = "Unentschieden";
-    private final MoveHistory moveHistory;
+    private MoveHistory moveHistory;
+    private GameRecordRepo repository;
 
     private int moveCounter = 0;
 
-    public Game(Player whitePlayer, Player blackPlayer, Controller controller, MoveHistory moveHistory) {
+    public Game(Player whitePlayer, Player blackPlayer, Controller controller, MoveHistory moveHistory, Board board, GameRecordRepo repository) {
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
         this.controller = controller;
         this.moveHistory = moveHistory;
-        this.board = new Board();
+        this.board = board;
+        this.repository = repository;
         this.isGameOver = false;
     }
 
@@ -59,7 +62,7 @@ public class Game implements InterfaceGame {
             isGameOver = isGameOver(currentPlayer); // hier ist schon der nächste wieder dran bzw als current player markiert
         }
         GameRecord record = new GameRecord(whitePlayer.getName(), blackPlayer.getName(), winner, moveHistory.getDemMoves(), LocalDateTime.now());
-        GameRecordRepo repository = new FileGameRecordRepo();
+        //controller.saveGame();
         repository.saveGameRecord(record);
         controller.endGame();
     }
