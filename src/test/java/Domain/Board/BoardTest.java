@@ -103,20 +103,6 @@ public class BoardTest {
         assertTrue(board.isStalemate("white"), "Der weiße König sollte Patt sein.");
     }
 
-/*    @Test     Wird hier nicht getestet weil private methode
-    void testFindKingPosition() {
-        AbstractChessPiece whiteKing = new King("white", new Position(0, 0));
-        board.placePiece(whiteKing, new Position(0, 0));
-
-        Position kingPosition = board.findKingPosition("white");
-        assertEquals(new Position(0, 0), kingPosition, "Die Position des weißen Königs sollte korrekt sein.");
-    }
-
-    @Test
-    void testFindKingPositionThrowsException() {
-        assertThrows(KingNotFoundException.class, () -> board.findKingPosition("white"), "Es sollte eine KingNotFoundException geworfen werden, wenn kein König gefunden wird.");
-    }
-*/
     @Test
     void testPathClear() {
         board.placePiece(new Rook("white", new Position(0, 0)), new Position(0, 0));
