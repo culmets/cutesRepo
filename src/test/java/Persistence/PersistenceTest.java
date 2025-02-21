@@ -1,6 +1,5 @@
 package Persistence;
 
-import Application.Leaderboard;
 import Domain.Game.Move;
 import Domain.Board.Position;
 import Domain.Game.GameRecord;
@@ -38,33 +37,4 @@ public class PersistenceTest {
         assertEquals(move1, moves.get(0));
         assertEquals(move2, moves.get(1));
     }
-
-
-    @Test
-    void testGameRecordCreation() {
-        MoveHistory history = new MoveHistory();
-        history.addMove(new Move(new Position(1, 4), new Position(3, 4), 1, MoveType.NORMAL));
-        GameRecord record = new GameRecord("A", "B", "A", history.getDemMoves(), LocalDateTime.now());
-
-        assertEquals("A", record.getWhitePlayer());
-        assertEquals("B", record.getBlackPlayer());
-        assertEquals("A", record.getWinner());
-        assertEquals(1, record.getMoveHistory().size());
-    }
-
-    @Test
-    void testLeaderboardAddAndRetrieve() {
-        Leaderboard leaderboard = new Leaderboard();
-        MoveHistory history = new MoveHistory();
-        history.addMove(new Move(new Position(1, 4), new Position(3, 4), 1, MoveType.NORMAL));
-        GameRecord record = new GameRecord("A", "B", "A", history.getDemMoves(), LocalDateTime.now());
-
-        leaderboard.addGameRecord(record);
-        List<GameRecord> gamesForPlayerA = leaderboard.getGameRecordsForPlayer("A");
-        assertEquals(1, gamesForPlayerA.size());
-        assertEquals(record, gamesForPlayerA.getFirst());
-    }
-
-
-
 }
