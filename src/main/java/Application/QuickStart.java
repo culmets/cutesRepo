@@ -7,6 +7,7 @@ import Domain.Persistence.GameRecordRepo;
 import Domain.Player.HumanPlayer;
 import Domain.Player.Player;
 import Persistence.FileGameRecordRepo;
+import Persistence.FileLeaderboardRepo;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -16,17 +17,19 @@ public class QuickStart {
 
     public static void main(String[] args) {
         System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
-        String basePath = System.getProperty("user.dir") + File.separator + "saved_games";
+        String basePathGameRecord = System.getProperty("user.dir") + File.separator + "saved_games";
+        String basePathLeaderboard = System.getProperty("user.dir") + File.separator + "leaderboard";
 
         Player whitePlayer = new HumanPlayer("A", "white");
         Player blackPlayer = new HumanPlayer("B", "black");
 
-        GameRecordRepo repository = new FileGameRecordRepo(basePath);
+        GameRecordRepo repository = new FileGameRecordRepo(basePathGameRecord);
+        FileLeaderboardRepo leaderboardRepo = new FileLeaderboardRepo(basePathLeaderboard);
         Controller controller = new CLIController();
         MoveHistory moveHistory = new MoveHistory();
         Board board = new Board();
 
-        Game game = new Game(whitePlayer, blackPlayer, controller, moveHistory, board, repository);
+        Game game = new Game(whitePlayer, blackPlayer, controller, moveHistory, board, repository, leaderboardRepo);
 
         game.startGame();
     }
