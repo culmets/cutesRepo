@@ -45,7 +45,7 @@ public class GameInitializer {
 
         if(choice == 3){
             System.out.println("Leaderboard wird ausgegeben:");
-            System.out.println(leaderboardRepo.getLeaderboard());
+            leaderboardRepo.printLeaderboard();
             System.exit(0);
         }
 
