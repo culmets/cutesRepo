@@ -6,7 +6,7 @@ import Domain.Board.Position;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Queen extends AbstractChessPiece implements ChessPiece{
+public class Queen extends AbstractChessPiece implements ChessPiece {
 
     public Queen(String color, Position position) {
         super(color, position);
@@ -59,21 +59,18 @@ public class Queen extends AbstractChessPiece implements ChessPiece{
                     break;
                 }
                 Position newPosition = new Position(row, col);
-                if (!board.isWithinBoard(newPosition)) {
+
+                if (!board.isPathClear(getPosition(), newPosition)) {
                     break;
                 }
+                AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
 
-                if (board.isPathClear(getPosition(), newPosition)) {
-                    AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
-                    if (pieceAtNewPosition == null) {
-                        validMoves.add(newPosition);
-                    } else if (!pieceAtNewPosition.getColor().equals(this.getColor())) {
-                        validMoves.add(newPosition);
-                        break;
-                    } else {
-                        break;
-                    }
+                if (pieceAtNewPosition == null) {
+                    validMoves.add(newPosition);
                 } else {
+                    if (!pieceAtNewPosition.getColor().equals(this.getColor())) {
+                        validMoves.add(newPosition);
+                    }
                     break;
                 }
             }

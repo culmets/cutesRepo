@@ -39,16 +39,17 @@ public class Knight extends AbstractChessPiece implements ChessPiece{
         };
 
         for (int[] move : moves) {
-            int newRow = getPosition().row() + move[0];
-            int newCol = getPosition().col() + move[1];
+            int row = getPosition().row() + move[0];
+            int col = getPosition().col() + move[1];
 
-            if (newRow < 0 || newRow > 7 || newCol < 0 || newCol > 7) {
-                break;
+            if (row < 0 || row > 7 || col < 0 || col > 7) {
+                continue;
             }
-            Position newPosition = new Position(newRow, newCol);
-//ist die neue Position noch aufm board und steht wenn dann ein gegnerisches Piece darauf
-            if (board.isWithinBoard(newPosition) && (board.getPieceAt(newPosition) == null ||
-                    !board.getPieceAt(newPosition).getColor().equals(this.getColor()))) {
+            Position newPosition = new Position(row, col);
+
+            AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
+
+            if (pieceAtNewPosition == null || !pieceAtNewPosition.getColor().equals(this.getColor())) {
                 validMoves.add(newPosition);
             }
         }

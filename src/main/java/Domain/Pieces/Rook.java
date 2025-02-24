@@ -51,23 +51,16 @@ public class Rook extends AbstractChessPiece implements ChessPiece {
 
                 Position newPosition = new Position(row, col);
 
-                if (!board.isWithinBoard(newPosition)) {
+                AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
+
+                if (pieceAtNewPosition == null) {
+                    validMoves.add(newPosition);
+                } else {
+                    if (!pieceAtNewPosition.getColor().equals(this.getColor())) {
+                        validMoves.add(newPosition);
+                    }
                     break;
                 }
-                if (board.isPathClear(getPosition(), newPosition)) {
-                    AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
-                    if (pieceAtNewPosition == null) { //wenn keine figur auf neuen feld steht
-                        validMoves.add(newPosition);
-                    } else if (!pieceAtNewPosition.getColor().equals(this.getColor())) { // wenn gegnerische figur auf feld steht
-                        validMoves.add(newPosition); // gegnerische figur schlagen
-                        break;
-                    } else {
-                        break; // eigene figur blockiert feld
-                    }
-                } else {
-                    break; // weg ist blockiert
-                }
-                validMoves.add(newPosition); //pos war frei
             }
         }
         //move ist endpos -> prüfung ob endpos könig in schach stellt
