@@ -21,10 +21,11 @@ public record Position(int row, int col) {
 
     @Override
     public String toString() {
-        char column = (char) ('a' + row);
-        int row = col + 1;
-        return "" + column + row;
+        char letter = (char) ('a' + col);
+        int number = row + 1;
+        return "" + letter + number;
     }
+
 
     public static Position fromString(String s) {
         if (s == null || s.length() != 2) {
