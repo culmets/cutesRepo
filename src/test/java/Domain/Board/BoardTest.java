@@ -83,24 +83,40 @@ public class BoardTest {
         AbstractChessPiece whiteKing = new King("white", new Position(0, 0));
         AbstractChessPiece blackRook1 = new Rook("black", new Position(0, 7));
         AbstractChessPiece blackRook2 = new Rook("black", new Position(7, 0));
+        AbstractChessPiece blackQueen = new Queen("black", new Position(7, 7));
         board.placePiece(whiteKing, new Position(0, 0));
         board.placePiece(blackRook1, new Position(0, 7));
         board.placePiece(blackRook2, new Position(7, 0));
-
+        board.placePiece(blackQueen, new Position(7, 7));
+        board.printBoard();
         assertTrue(board.isCheckmate("white"), "Der weiße König sollte Schachmatt sein.");
     }
 
     @Test
     void testIsStalemate() {
-        AbstractChessPiece whiteKing = new King("white", new Position(5, 7));
-        AbstractChessPiece blackKing = new King("black", new Position(0, 7));
-        AbstractChessPiece blackQueen = new Queen("black", new Position(4, 5));
-        board.placePiece(whiteKing, new Position(5, 7));
-        board.placePiece(blackKing, new Position(0, 7));
-        board.placePiece(blackQueen, new Position(4, 5));
+        AbstractChessPiece whiteKing = new King("white", new Position(7, 5));
+        AbstractChessPiece blackKing = new King("black", new Position(5, 5));
+        AbstractChessPiece blackPawn = new Pawn("black", new Position(6, 5));
+        board.placePiece(whiteKing, new Position(7, 5));
+        board.placePiece(blackKing, new Position(5, 5));
+        board.placePiece(blackPawn, new Position(6, 5));
         board.printBoard();
 
         assertTrue(board.isStalemate("white"), "Der weiße König sollte Patt sein.");
+    }
+
+    @Test
+    void isStalemate2(){
+        AbstractChessPiece whiteKing = new King("white", new Position(5, 1));
+        AbstractChessPiece blackKing = new King("black", new Position(7, 0));
+        AbstractChessPiece blackRook = new Knight("white", new Position(5, 2));
+        board.placePiece(whiteKing, new Position(5, 1));
+        board.placePiece(blackKing, new Position(7, 0));
+        board.placePiece(blackRook, new Position(5, 2));
+        board.printBoard();
+
+        assertTrue(board.isStalemate("black"), "Der weiße König sollte Patt sein.");
+
     }
 
     @Test
@@ -110,5 +126,13 @@ public class BoardTest {
 
         assertFalse(board.isPathClear(new Position(0, 0), new Position(0, 7)), "Der Pfad sollte nicht frei sein.");
         assertTrue(board.isPathClear(new Position(0, 0), new Position(0, 3)), "Der Pfad sollte frei sein.");
+    }
+
+    @Test
+    void testPositionConversion() {
+        Position pos = new Position(7, 5);  // Erwartet "f8"
+        assertEquals("f8", pos.toString());
+        Position pos2 = Position.fromString("f8");
+        assertEquals(pos, pos2);
     }
 }
