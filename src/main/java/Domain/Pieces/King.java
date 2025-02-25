@@ -57,10 +57,11 @@ public class King extends AbstractChessPiece implements ChessPiece{
             AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
 
             if (pieceAtNewPosition == null || !pieceAtNewPosition.getColor().equals(this.getColor())) {
-                validMoves.add(newPosition);
+                if(board.isKingSafeAfterMove(this.getPosition(), newPosition, this.getColor())){
+                    validMoves.add(newPosition);
+                }
             }
         }
-        validMoves.removeIf(move -> !board.isKingSafeAfterMove(this.getPosition(), move, this.getColor()));
         return validMoves;
     }
 }
