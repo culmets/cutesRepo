@@ -1,4 +1,4 @@
-package Application;
+package Application.Command;
 
 public interface GameCommand {
 
