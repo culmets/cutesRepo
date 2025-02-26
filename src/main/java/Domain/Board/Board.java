@@ -281,5 +281,58 @@ public class Board {
         piece.setPosition(position);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        // position|Figurentyp|Farbe
+        for (Map.Entry<Position, AbstractChessPiece> entry : board.entrySet()) {
+            Position pos = entry.getKey();
+            AbstractChessPiece piece = entry.getValue();
+            sb.append(pos.toString())
+                    .append("|")
+                    .append(piece.getClass().getSimpleName())
+                    .append("|")
+                    .append(piece.getColor())
+                    .append("\n");
+        }
+        return sb.toString().trim();
+    }
+    public static Board fromString(String boardString) {
+        Board board = new Board(true);
+        String[] lines = boardString.split("\n");
+        for (String line : lines) {
+            if (line.trim().isEmpty()) continue;
+            String[] parts = line.split("\\|");
+            if (parts.length < 3) continue;
+            Position pos = Position.fromString(parts[0].trim());
+            String pieceType = parts[1].trim();
+            String color = parts[2].trim();
+            AbstractChessPiece piece = null;
+            switch (pieceType.toLowerCase()) {
+                case "pawn":
+                    piece = new Pawn(color, pos);
+                    break;
+                case "knight":
+                    piece = new Knight(color, pos);
+                    break;
+                case "bishop":
+                    piece = new Bishop(color, pos);
+                    break;
+                case "rook":
+                    piece = new Rook(color, pos);
+                    break;
+                case "queen":
+                    piece = new Queen(color, pos);
+                    break;
+                case "king":
+                    piece = new King(color, pos);
+                    break;
+                default:
+                    continue;
+            }
+            board.placePiece(piece, pos);
+        }
+        return board;
+    }
 
 }
