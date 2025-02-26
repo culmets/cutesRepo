@@ -26,9 +26,12 @@ public record Position(int row, int col) {
         return "" + letter + number;
     }
 
-
     public static Position fromString(String s) {
-        if (s == null || s.length() != 2) {
+        if (s == null) {
+            throw new IllegalArgumentException("Ungültiges Positionsformat: null");
+        }
+        s = s.trim().toLowerCase();
+        if (s.length() != 2) {
             throw new IllegalArgumentException("Ungültiges Positionsformat: " + s);
         }
         char colChar = s.charAt(0);
@@ -42,8 +45,10 @@ public record Position(int row, int col) {
         }
 
         int col = colChar - 'a';
-        int row = rowChar - '1'; 
+        int row = rowChar - '1';
 
         return new Position(row, col);
     }
+
+
 }
