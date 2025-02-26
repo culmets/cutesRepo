@@ -63,6 +63,7 @@ public class PawnTest {
 
     @Test
     void testInvalidBackwardMove() {
+        board.printBoard();
         assertFalse(whitePawn.getValidMoves(board).contains(new Position(0, 4)), "Bauer darf nicht rückwärts ziehen.");
     }
 
@@ -92,4 +93,47 @@ public class PawnTest {
         assertTrue(whiteMoves.isEmpty(), "Bauer sollte keinen Zug machen, wenn der König im Schach steht.");
     }
 
+    @Test
+    void testEnPassant() {
+        Pawn whitePawn = new Pawn("white", new Position(4,3));
+        board.placePiece(whitePawn, new Position(4,3));
+        board.printBoard();
+
+        boolean moveOk = board.movePiece(new Position(6,4), new Position(4,4), "black"); //schwarzer Pawn zieht 2 Felder
+        assertTrue(moveOk, "Der schwarzen Bauer sollte zwei Felder gezogen sein.");
+
+        List<Position> validMoves = whitePawn.getValidMoves(board);
+        assertTrue(validMoves.contains(new Position(5,4)),
+                "Der weiße Bauer sollte f5 (en passant) als gültigen Zug haben.");
+    }
+
+    @Test
+    void testPawnPromotionWhite() {
+        Pawn whitePawn = new Pawn("white", new Position(6,1)); //Bauer in die vorletzte Reihe
+        board.placePiece(whitePawn, new Position(6,1));
+
+        boolean moved = board.movePiece(new Position(6,1), new Position(7,1), "white");
+        board.printBoard();
+
+        assertTrue(moved, "Der Zug des weißen Bauern nach b8 sollte erfolgreich sein.");
+
+        AbstractChessPiece piece = board.getPieceAt(new Position(7,1));
+        assertNotNull(piece, "Nach dem Zug muss eine Figur am Ziel stehen.");
+        assertInstanceOf(Queen.class, piece, "Der weiße Bauer sollte in eine Dame umgewandelt werden.");
+    }
+
+    @Test
+    void testPawnPromotionBlack() {
+        Pawn whitePawn = new Pawn("black", new Position(1,1)); //Bauer in die vorletzte Reihe
+        board.placePiece(whitePawn, new Position(1,1));
+
+        boolean moved = board.movePiece(new Position(1,1), new Position(0,1), "black");
+        board.printBoard();
+
+        assertTrue(moved, "Der Zug des schwarzen Bauern nach b0 sollte erfolgreich sein.");
+
+        AbstractChessPiece piece = board.getPieceAt(new Position(0,1));
+        assertNotNull(piece, "Nach dem Zug muss eine Figur am Ziel stehen.");
+        assertInstanceOf(Queen.class, piece, "Der weiße Bauer sollte in eine Dame umgewandelt werden.");
+    }
 }
