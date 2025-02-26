@@ -83,10 +83,10 @@ public class FileLeaderboardRepo implements LeaderboardRepository {
 
     public void printLeaderboard() {
         List<LeaderboardEntry> entries = getLeaderboard();
-        System.out.println(String.format("%-20s | %s", "Spieler", "Siege"));
+        System.out.printf("%-20s | %s%n", "Spieler", "Siege");
         System.out.println("----------------------------------");
         for (LeaderboardEntry entry : entries) {
-            System.out.println(String.format("%-20s | %d", entry.playerName(), entry.winCount()));
+            System.out.printf("%-20s | %d%n", entry.playerName(), entry.winCount());
         }
     }
 }
