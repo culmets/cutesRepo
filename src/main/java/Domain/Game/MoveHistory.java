@@ -33,4 +33,15 @@ public class MoveHistory {
         return sb.toString();
     }
 
+    public static MoveHistory fromString(String movesString) {
+        MoveHistory history = new MoveHistory();
+        String[] lines = movesString.split("\n");
+        for (String line : lines) {
+            if (line.trim().isEmpty()) continue;
+            Move move = Move.fromString(line.trim());
+            history.addMove(move);
+        }
+        return history;
+    }
+
 }
