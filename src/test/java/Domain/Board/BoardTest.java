@@ -93,7 +93,7 @@ public class BoardTest {
     }
 
     @Test
-    void testIsStalemate() {
+    void testIsStalemateWithPawn() {
         AbstractChessPiece whiteKing = new King("white", new Position(7, 5));
         AbstractChessPiece blackKing = new King("black", new Position(5, 5));
         AbstractChessPiece blackPawn = new Pawn("black", new Position(6, 5));
@@ -106,17 +106,72 @@ public class BoardTest {
     }
 
     @Test
-    void isStalemate2(){
+    void isStalemateWithKnight(){
         AbstractChessPiece whiteKing = new King("white", new Position(5, 1));
         AbstractChessPiece blackKing = new King("black", new Position(7, 0));
-        AbstractChessPiece blackRook = new Knight("white", new Position(5, 2));
+        AbstractChessPiece blackKnight = new Knight("white", new Position(5, 2));
         board.placePiece(whiteKing, new Position(5, 1));
         board.placePiece(blackKing, new Position(7, 0));
-        board.placePiece(blackRook, new Position(5, 2));
+        board.placePiece(blackKnight, new Position(5, 2));
         board.printBoard();
 
-        assertTrue(board.isStalemate("black"), "Der weiße König sollte Patt sein.");
+        assertTrue(board.isStalemate("black"), "Der schwarze König sollte Patt sein.");
+    }
+    @Test
+    void isStalemateWithQueen(){
+        AbstractChessPiece whiteKing = new King("white", new Position(2, 5));
+        AbstractChessPiece blackKing = new King("black", new Position(0, 6));
+        AbstractChessPiece blackQueen = new Queen("white", new Position(2, 7));
+        board.placePiece(whiteKing, new Position(2, 5));
+        board.placePiece(blackKing, new Position(0, 6));
+        board.placePiece(blackQueen, new Position(2, 7));
+        board.printBoard();
 
+        assertTrue(board.isStalemate("black"), "Der schwarze König sollte Patt sein.");
+    }
+    @Test
+    void isStalemateWithRook(){
+        AbstractChessPiece whiteKing = new King("white", new Position(5, 7));
+        AbstractChessPiece blackKing = new King("black", new Position(7, 7));
+        AbstractChessPiece whiteRook = new Rook("white", new Position(0, 6));
+        board.placePiece(whiteKing, new Position(5, 7));
+        board.placePiece(blackKing, new Position(7, 7));
+        board.placePiece(whiteRook, new Position(0, 6));
+        board.printBoard();
+
+        assertTrue(board.isStalemate("black"), "Der schwarze König sollte Patt sein.");
+    }
+    @Test
+    void isStalemateWithBishop(){
+        AbstractChessPiece whiteKing = new King("white", new Position(2, 7));
+        AbstractChessPiece blackKing = new King("black", new Position(7, 7));
+        AbstractChessPiece blackPawn = new Pawn("black", new Position(6, 7));
+        AbstractChessPiece whiteBishop2 = new Bishop("white", new Position(5, 7));
+        AbstractChessPiece whiteBishop = new Bishop("white", new Position(4, 3));
+        board.placePiece(whiteKing, new Position(2, 7));
+        board.placePiece(blackKing, new Position(7, 7));
+        board.placePiece(blackPawn, new Position(6, 7));
+        board.placePiece(whiteBishop2, new Position(5, 7));
+        board.placePiece(whiteBishop, new Position(4, 3));
+        board.printBoard();
+
+        assertTrue(board.isStalemate("black"), "Der schwarze König sollte Patt sein.");
+    }
+    @Test
+    void isStalemateWithBishopAndPawn(){
+        AbstractChessPiece whiteKing = new King("white", new Position(2, 7));
+        AbstractChessPiece blackKing = new King("black", new Position(7, 7));
+        AbstractChessPiece blackPawn = new Pawn("black", new Position(6, 7));
+        AbstractChessPiece whitePawn = new Pawn("white", new Position(5, 7));
+        AbstractChessPiece whiteBishop = new Bishop("white", new Position(4, 3));
+        board.placePiece(whiteKing, new Position(2, 7));
+        board.placePiece(blackKing, new Position(7, 7));
+        board.placePiece(blackPawn, new Position(6, 7));
+        board.placePiece(whitePawn, new Position(5, 7));
+        board.placePiece(whiteBishop, new Position(4, 3));
+        board.printBoard();
+
+        assertTrue(board.isStalemate("black"), "Der schwarze König sollte Patt sein.");
     }
 
     @Test
