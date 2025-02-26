@@ -74,10 +74,10 @@ void cleanUp() throws IOException {
         List<GameRecord> records = repository.getGameRecordsForPlayer("Alice");
         assertFalse(records.isEmpty(), "Es sollte mind einen GameRecord geben.");
         GameRecord retrieved = records.getFirst();
-        assertEquals("Alice", retrieved.getWhitePlayer(), "White player sollte Alice sein.");
-        assertEquals("Bob", retrieved.getBlackPlayer(), "Black player sollte Bob sein.");
-        assertEquals("Alice", retrieved.getWinner(), "Winner sollte Alice sein.");
-        assertEquals(1, retrieved.getMoveHistory().size(), "MoveHistory sollte 1 Move enthalten.");
+        assertEquals("Alice", retrieved.whitePlayer(), "White player sollte Alice sein.");
+        assertEquals("Bob", retrieved.blackPlayer(), "Black player sollte Bob sein.");
+        assertEquals("Alice", retrieved.winner(), "Winner sollte Alice sein.");
+        assertEquals(1, retrieved.moveHistory().size(), "MoveHistory sollte 1 Move enthalten.");
     }
 
     @Test

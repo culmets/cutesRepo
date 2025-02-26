@@ -65,8 +65,8 @@ public class FileGameRecordRepo implements GameRecordRepo {
                     String line = reader.readLine();
                     if (line != null) {
                         GameRecord record = deserialize(line);
-                        if (record.getWhitePlayer().equalsIgnoreCase(playerName) ||
-                                record.getBlackPlayer().equalsIgnoreCase(playerName)) {
+                        if (record.whitePlayer().equalsIgnoreCase(playerName) ||
+                                record.blackPlayer().equalsIgnoreCase(playerName)) {
                             records.add(record);
                         }
                     }
@@ -82,11 +82,11 @@ public class FileGameRecordRepo implements GameRecordRepo {
     // Format Move: start,end,moveNumber,moveType
     private String serialize(GameRecord record) {
         StringBuilder sb = new StringBuilder();
-        sb.append(record.getWhitePlayer()).append(";");
-        sb.append(record.getBlackPlayer()).append(";");
-        sb.append(record.getWinner()).append(";");
-        sb.append(record.getGameDate().toString()).append(";");
-        List<Move> moves = record.getMoveHistory();
+        sb.append(record.whitePlayer()).append(";");
+        sb.append(record.blackPlayer()).append(";");
+        sb.append(record.winner()).append(";");
+        sb.append(record.gameDate().toString()).append(";");
+        List<Move> moves = record.moveHistory();
         for (int i = 0; i < moves.size(); i++) {
             sb.append(moves.get(i).toString());
             if (i < moves.size() - 1) {
