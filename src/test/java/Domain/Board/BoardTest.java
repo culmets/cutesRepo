@@ -94,15 +94,15 @@ public class BoardTest {
 
     @Test
     void testIsStalemateWithPawn() {
-        AbstractChessPiece whiteKing = new King("white", new Position(7, 5));
-        AbstractChessPiece blackKing = new King("black", new Position(5, 5));
-        AbstractChessPiece blackPawn = new Pawn("black", new Position(6, 5));
-        board.placePiece(whiteKing, new Position(7, 5));
-        board.placePiece(blackKing, new Position(5, 5));
-        board.placePiece(blackPawn, new Position(6, 5));
+        AbstractChessPiece whiteKing = new King("white", new Position(5, 5));
+        AbstractChessPiece blackKing = new King("black", new Position(7, 5));
+        AbstractChessPiece whitePawn = new Pawn("white", new Position(6, 5));
+        board.placePiece(whiteKing, new Position(5, 5));
+        board.placePiece(blackKing, new Position(7, 5));
+        board.placePiece(whitePawn, new Position(6, 5));
         board.printBoard();
 
-        assertTrue(board.isStalemate("white"), "Der weiße König sollte Patt sein.");
+        assertTrue(board.isStalemate("black"), "Der schwarze König sollte Patt sein.");
     }
 
     @Test
