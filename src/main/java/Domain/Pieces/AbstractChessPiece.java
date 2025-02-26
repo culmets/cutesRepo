@@ -28,6 +28,6 @@ public abstract class AbstractChessPiece implements ChessPiece {
 
     public abstract String getSymbol();
 
-    public abstract  boolean canAttack(Position targetPosition, Board board);
+    public abstract boolean canAttack(Position targetPosition, Board board);
 
 }
