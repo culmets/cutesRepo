@@ -2,17 +2,22 @@ package Application;
 
 import Domain.Board.Board;
 import Domain.Game.Game;
+import Domain.Game.GameState;
 import Domain.Game.MoveHistory;
 import Domain.Persistence.GameRecordRepo;
+import Domain.Persistence.GameStateRepo;
+import Domain.Persistence.LeaderboardRepository;
 import Domain.Player.ComputerPlayer;
 import Domain.Player.HumanPlayer;
 import Domain.Player.Player;
 import Persistence.FileGameRecordRepo;
+import Persistence.FileGameStateRepo;
 import Persistence.FileLeaderboardRepo;
 
 import java.io.File;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.Scanner;
 
 import static java.lang.System.exit;
@@ -20,8 +25,12 @@ import static java.lang.System.exit;
 public class GameInitializer {
     public static void main(String[] args) {
         System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
-        String basePath = System.getProperty("user.dir") + File.separator + "saved_games";
-        FileLeaderboardRepo leaderboardRepo = new FileLeaderboardRepo("leaderboard");
+        String basePathGameRecord = System.getProperty("user.dir") + File.separator + "saved_games";
+        String basePathLeaderboard = System.getProperty("user.dir") + File.separator + "leaderboard";
+        String basePathGameState = System.getProperty("user.dir") + File.separator + "game_state_";
+        FileLeaderboardRepo leaderboardRepo = new FileLeaderboardRepo(basePathLeaderboard);
+        GameStateRepo gameStateRepo = new FileGameStateRepo(basePathGameState);
+        GameRecordRepo gameRecordRepo = new FileGameRecordRepo(basePathGameRecord);
 
         Scanner scanner = new Scanner(System.in);
 
@@ -30,22 +39,46 @@ public class GameInitializer {
         System.out.println("1 - Zwei menschliche Spieler");
         System.out.println("2 - Mensch gegen Computer");
         System.out.println("3 - Leaderboard anzeigen");
+        System.out.println("4 - Spielstand laden");
+
 
         int choice;
         while (true) {
-            System.out.print("Eingabe 1, 2 oder 3: ");
+            System.out.print("Eingabe 1, 2, 3 oder 4: ");
             choice = scanner.nextInt();
             scanner.nextLine();
-            if (choice == 1 || choice == 2 || choice == 3) {
+            if (choice == 1 || choice == 2 || choice == 3 || choice == 4) {
                 break;
             } else {
-                System.out.println("Ungültige Eingabe. Bitte geben Sie 1, 2 oder 3 ein.");
+                System.out.println("Ungültige Eingabe. Bitte geben Sie 1, 2, 3 oder 4 ein.");
             }
         }
 
         if(choice == 3){
             System.out.println("Leaderboard wird ausgegeben:");
             leaderboardRepo.printLeaderboard();
+            System.exit(0);
+        } else if (choice == 4){
+            System.out.println("Bitte wählen Sie einen Spielstand aus:");
+            //Optional<GameState> savedGame = gameStateRepo.loadLatestGameState();
+            Optional<GameState> savedGame = ((FileGameStateRepo) gameStateRepo).loadGameState("game_record_20250226_135859_29301.txt");
+
+            System.out.println(savedGame.isPresent());
+            if(savedGame.isPresent()){
+                GameState loadedState = savedGame.get();
+                Board board = Board.fromString(loadedState.boardState());
+                MoveHistory history = MoveHistory.fromString(loadedState.moveHistory());
+                String activePlayerColor = loadedState.activePlayer();
+
+                Player whitePlayer = new HumanPlayer("White", "white");
+                Player blackPlayer = new HumanPlayer("Black", "black");
+
+                Game game = new Game(whitePlayer, blackPlayer, new CLIController(), history, board, gameRecordRepo, leaderboardRepo, gameStateRepo);
+                game.setCurrentTurn(activePlayerColor);
+                game.startGame();
+                System.exit(0);
+            }
+            System.out.println("Es wurde kein Spielstand gefunden :(");
             System.exit(0);
         }
 
@@ -65,11 +98,10 @@ public class GameInitializer {
 
         Controller controller = new CLIController();
 
-        GameRecordRepo repository = new FileGameRecordRepo(basePath);
         MoveHistory moveHistory = new MoveHistory();
         Board board = new Board();
 
-        Game game = new Game(whitePlayer, blackPlayer, controller, moveHistory, board, repository, leaderboardRepo);
+        Game game = new Game(whitePlayer, blackPlayer, controller, moveHistory, board, gameRecordRepo, leaderboardRepo, gameStateRepo);
 
         game.startGame();
     }

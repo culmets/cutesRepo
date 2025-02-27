@@ -1,8 +1,12 @@
 package Domain.Game;
 
 import Application.Controller;
+import Application.Command.GameCommand;
+import Application.Command.MoveCommand;
+import Application.Command.SaveCommand;
 import Domain.Board.Board;
 import Domain.Board.Position;
+import Domain.Persistence.GameStateRepo;
 import Domain.Persistence.LeaderboardRepository;
 import Domain.Player.Player;
 import Domain.Persistence.GameRecordRepo;
@@ -21,10 +25,12 @@ public class Game implements InterfaceGame {
     private MoveHistory moveHistory;
     private GameRecordRepo recordRepository;
     private LeaderboardRepository leaderboardRepo;
+    private GameStateRepo gameStateRepo;
 
+    private Player currentPlayer;
     private int moveCounter = 0;
 
-    public Game(Player whitePlayer, Player blackPlayer, Controller controller, MoveHistory moveHistory, Board board, GameRecordRepo repository, FileLeaderboardRepo leaderboardRepo) {
+    public Game(Player whitePlayer, Player blackPlayer, Controller controller, MoveHistory moveHistory, Board board, GameRecordRepo repository, FileLeaderboardRepo leaderboardRepo, GameStateRepo gameStateRepo) {
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
         this.controller = controller;
@@ -32,32 +38,40 @@ public class Game implements InterfaceGame {
         this.board = board;
         this.recordRepository = repository;
         this.leaderboardRepo = leaderboardRepo;
+        this.gameStateRepo = gameStateRepo;
         this.isGameOver = false;
+        this.currentPlayer = whitePlayer; //damit der weiße als default anfängt -> wenn gameState geladen wird, wird currenPlayer extra gesetzt.
     }
 
     @Override
     public void startGame() {
         controller.startGame();
-        Player currentPlayer = whitePlayer;
 
         while (!isGameOver) {
             System.out.println("Zug für: " + currentPlayer.getName() + ", " + currentPlayer.getColor());
             Position start, end;
             boolean validMove = false;
 
-            // wdh bis eingabe richtig
-            while (!validMove) {
+            while (!validMove) { // wdh bis eingabe richtig -> ein Zug
                 board.printBoard();
-                start = controller.getMoveStart();
-                end = controller.getMoveEnd();
+                GameCommand command = controller.getCommand();
+                if (command instanceof SaveCommand) {
+                    System.out.println("Aktuelles Spiel wird gespeichert");
+                    GameState gameState = new GameState(currentPlayer.getColor(), board.toString(), moveHistory.toString(), LocalDateTime.now());
+                    System.out.println("Aktuelles Spiel gespeichert unter dem Namen: " + gameStateRepo.saveGameState(gameState));
+                    System.exit(0);
+                } else if (command instanceof MoveCommand) {
 
-                if (board.movePiece(start, end, currentPlayer.getColor())) {
-                    //speichern des moves
-                    moveCounter++;
-                    Move move = new Move(start, end, moveCounter, MoveType.NORMAL); // nochmal schaune mit movetype, braucht man das?
-                    moveHistory.addMove(move);
+                    start = ((MoveCommand) command).start();
+                    end = ((MoveCommand) command).end();
 
-                    validMove = true;
+                    if (board.movePiece(start, end, currentPlayer.getColor())) {
+                        //speichern des moves
+                        moveCounter++;
+                        Move move = new Move(start, end, moveCounter, MoveType.NORMAL); // nochmal schaune mit movetype, braucht man das?
+                        moveHistory.addMove(move);
+                        validMove = true;
+                    }
                 }
             }
             currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
@@ -93,5 +107,13 @@ public class Game implements InterfaceGame {
     @Override
     public String getWinner() {
         return winner;
+    }
+
+    public void setCurrentTurn(String activePlayerColor) {
+        if(activePlayerColor.equals("white")){
+            currentPlayer = whitePlayer;
+        } else {
+            currentPlayer = blackPlayer;
+        }
     }
 }
