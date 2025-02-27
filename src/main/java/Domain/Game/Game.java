@@ -23,9 +23,9 @@ public class Game implements InterfaceGame {
     private boolean isGameOver;
     private String winner = "Unentschieden";
     private MoveHistory moveHistory;
-    private GameRecordRepo recordRepository;
-    private LeaderboardRepository leaderboardRepo;
-    private GameStateRepo gameStateRepo;
+    private final GameRecordRepo recordRepository;
+    private final LeaderboardRepository leaderboardRepo;
+    private final GameStateRepo gameStateRepo;
 
     private Player currentPlayer;
     private int moveCounter = 0;
@@ -57,7 +57,7 @@ public class Game implements InterfaceGame {
                 GameCommand command = controller.getCommand();
                 if (command instanceof SaveCommand) {
                     System.out.println("Aktuelles Spiel wird gespeichert");
-                    GameState gameState = new GameState(currentPlayer.getColor(), board.toString(), moveHistory.toString(), LocalDateTime.now());
+                    GameState gameState = new GameState(currentPlayer.getColor(), board.toString(), moveHistory.toString(), currentPlayer.getName(), (currentPlayer == whitePlayer) ? blackPlayer.getName() : whitePlayer.getName());
                     System.out.println("Aktuelles Spiel gespeichert unter dem Namen: " + gameStateRepo.saveGameState(gameState));
                     System.exit(0);
                 } else if (command instanceof MoveCommand) {
