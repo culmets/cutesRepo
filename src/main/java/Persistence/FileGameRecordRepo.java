@@ -4,7 +4,6 @@ import Domain.Board.Position;
 import Domain.Game.GameRecord;
 import Domain.Game.Move;
 import Domain.Game.MoveHistory;
-import Domain.Game.MoveType;
 import Domain.Persistence.GameRecordRepo;
 
 import java.io.BufferedReader;
@@ -79,7 +78,7 @@ public class FileGameRecordRepo implements GameRecordRepo {
     }
 
     // Format: whitePlayer;blackPlayer;winner;gameDate;move1|move2|...
-    // Format Move: start,end,moveNumber,moveType
+    // Format Move: start,end,moveNumber
     private String serialize(GameRecord record) {
         StringBuilder sb = new StringBuilder();
         sb.append(record.whitePlayer()).append(";");
@@ -120,13 +119,12 @@ public class FileGameRecordRepo implements GameRecordRepo {
 
     private Move parseMove(String moveStr) {
         String[] parts = moveStr.split(",");
-        if (parts.length != 4) {
+        if (parts.length != 3) {
             throw new RuntimeException("Invalid move format: " + moveStr);
         }
         Position start = Position.fromString(parts[0]);
         Position end = Position.fromString(parts[1]);
         int moveNumber = Integer.parseInt(parts[2]);
-        MoveType moveType = MoveType.valueOf(parts[3].toUpperCase());
-        return new Move(start, end, moveNumber, moveType);
+        return new Move(start, end, moveNumber);
     }
 }

@@ -11,7 +11,7 @@ public class MoveTest {
     void testMoveSerialization() {
         Position start = new Position(4, 1); // e2
         Position end = new Position(4, 3);   // e4
-        Move move = new Move(start, end, 1, MoveType.NORMAL);
+        Move move = new Move(start, end, 1);
 
         String serialized = move.toString(); // z. B. "e2,e4,1,normal"
         Move deserialized = Move.fromString(serialized);

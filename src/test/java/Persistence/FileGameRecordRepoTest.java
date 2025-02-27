@@ -3,7 +3,6 @@ package Persistence;
 import Domain.Game.Move;
 import Domain.Game.GameRecord;
 import Domain.Game.MoveHistory;
-import Domain.Game.MoveType;
 import Domain.Board.Position;
 import Domain.Persistence.GameRecordRepo;
 import org.junit.jupiter.api.AfterEach;
@@ -65,7 +64,7 @@ void cleanUp() throws IOException {
         FileGameRecordRepo repository = new FileGameRecordRepo(TEST_FOLDER);
 
         MoveHistory history = new MoveHistory();
-        Move move = new Move(new Position(1, 4), new Position(3, 4), 1, MoveType.NORMAL);
+        Move move = new Move(new Position(1, 4), new Position(3, 4), 1);
         history.addMove(move);
         GameRecord record = new GameRecord("Alice", "Bob", "Alice", history.getDemMoves(), LocalDateTime.of(2023, 3, 1, 12, 0));
 
@@ -85,13 +84,13 @@ void cleanUp() throws IOException {
         GameRecordRepo repository = new FileGameRecordRepo(TEST_FOLDER);
 
         MoveHistory history1 = new MoveHistory();
-        history1.addMove(new Move(new Position(1, 4), new Position(3, 4), 1, MoveType.NORMAL));
+        history1.addMove(new Move(new Position(1, 4), new Position(3, 4), 1));
         LocalDateTime date1 = LocalDateTime.of(2023, 3, 1, 12, 0);
         GameRecord record1 = new GameRecord("Alice", "Bob", "Alice", history1.getDemMoves(), date1);
         repository.saveGameRecord(record1);
 
         MoveHistory history2 = new MoveHistory();
-        history2.addMove(new Move(new Position(6, 4), new Position(4, 4), 1, MoveType.NORMAL));
+        history2.addMove(new Move(new Position(6, 4), new Position(4, 4), 1));
         LocalDateTime date2 = LocalDateTime.of(2023, 3, 2, 14, 0);
         GameRecord record2 = new GameRecord("Alice", "Charlie", "Alice", history2.getDemMoves(), date2);
         repository.saveGameRecord(record2);

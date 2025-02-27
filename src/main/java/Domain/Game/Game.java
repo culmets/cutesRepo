@@ -68,7 +68,7 @@ public class Game implements InterfaceGame {
                     if (board.movePiece(start, end, currentPlayer.getColor())) {
                         //speichern des moves
                         moveCounter++;
-                        Move move = new Move(start, end, moveCounter, MoveType.NORMAL); // nochmal schaune mit movetype, braucht man das?
+                        Move move = new Move(start, end, moveCounter); // nochmal schaune mit movetype, braucht man das?
                         moveHistory.addMove(move);
                         validMove = true;
                     }
@@ -80,6 +80,7 @@ public class Game implements InterfaceGame {
         GameRecord record = new GameRecord(whitePlayer.getName(), blackPlayer.getName(), winner, moveHistory.getDemMoves(), LocalDateTime.now());
         recordRepository.saveGameRecord(record);
         leaderboardRepo.updateWin(winner);
+        // gameSTate file löschen
         controller.endGame();
     }
 
