@@ -17,8 +17,10 @@ import Persistence.FileLeaderboardRepo;
 import java.io.File;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.IntStream;
 
 import static java.lang.System.exit;
 
@@ -46,25 +48,26 @@ public class GameInitializer {
         int choice;
         while (true) {
             System.out.print("Eingabe 1, 2, 3 oder 4: ");
-            choice = scanner.nextInt();
-            scanner.nextLine();
-            if (choice == 1 || choice == 2 || choice == 3 || choice == 4) {
-                break;
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+                if (choice >= 1 && choice <= 4) {
+                    break;
+                } else {
+                    System.out.println("Ungültige Eingabe. Bitte geben Sie 1, 2, 3 oder 4 ein.");
+                }
             } else {
                 System.out.println("Ungültige Eingabe. Bitte geben Sie 1, 2, 3 oder 4 ein.");
+                scanner.next(); // Den ungültigen Token verwerfen
             }
         }
-
         if(choice == 3){
             System.out.println("Leaderboard wird ausgegeben:");
             leaderboardRepo.printLeaderboard();
             System.exit(0);
         } else if (choice == 4){
-            System.out.println("Bitte wählen Sie einen Spielstand aus:");
 
-            Optional<GameState> savedGame = gameStateRepo.loadGameState("game_record_20250226_135859_29301.txt");
+            Optional<GameState> savedGame = chooseGameState(gameStateRepo);
 
-            System.out.println(savedGame.isPresent());
             if(savedGame.isPresent()){
                 GameState loadedState = savedGame.get();
                 Board board = Board.fromString(loadedState.boardState());
@@ -73,7 +76,7 @@ public class GameInitializer {
                 String activePlayerName = loadedState.activePlayerName();
                 String otherPlayerName = loadedState.otherPlayerName();
 
-                if(activePlayerColor.equalsIgnoreCase("white")){
+                if(activePlayerColor.equalsIgnoreCase("white")){ // den Farben den richtigen Namen zu teilen
                     whitePlayer = new HumanPlayer(activePlayerName, "white");
                     blackPlayer = new HumanPlayer(otherPlayerName, "black");
                 } else {
@@ -90,6 +93,7 @@ public class GameInitializer {
             System.exit(0);
         }
 
+        //Normales Spiel
 
         System.out.print("Name des weißen Spielers: ");
         String whiteName = scanner.nextLine();
@@ -103,13 +107,32 @@ public class GameInitializer {
             blackPlayer = new ComputerPlayer("Computer (Schwarz)", "black");
         }
 
-        Controller controller = new CLIController();
-
-        MoveHistory moveHistory = new MoveHistory();
-        Board board = new Board();
-
-        Game game = new Game(whitePlayer, blackPlayer, controller, moveHistory, board, gameRecordRepo, leaderboardRepo, gameStateRepo);
-
+        Game game = new Game(whitePlayer, blackPlayer, new CLIController(), new MoveHistory(), new Board(), gameRecordRepo, leaderboardRepo, gameStateRepo);
         game.startGame();
+    }
+
+    private static Optional<GameState> chooseGameState(FileGameStateRepo gameStateRepo) {
+        List<String> fileNames = gameStateRepo.listGameStateFileNames();
+        System.out.println("Bitte wähle aus den Folgenden Dateien aus, welcher Spielstand weitergespielt werden soll:");
+        IntStream.range(0, fileNames.size())
+                .forEach(i -> System.out.println(i + ": " + fileNames.get(i)));
+
+        int choice;
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("Geben sie die Nummer des zu ladenden Spielstandes ein: ");
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+                if (choice <= fileNames.size()) {
+                    break;
+                } else {
+                    System.out.println("Ungültige Eingabe. Bitte geben Sie 1, 2, 3 oder 4 ein.");
+                }
+            } else {
+                System.out.println("Ungültige Eingabe. Bitte geben Sie 1, 2, 3 oder 4 ein.");
+                scanner.next();
+            }
+        }
+        return gameStateRepo.loadGameState(fileNames.get(choice));
     }
 }

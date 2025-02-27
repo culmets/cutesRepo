@@ -66,9 +66,8 @@ public class FileGameStateRepo implements GameStateRepo {
     public List<String> listGameStateFileNames() {
         try {
             return Files.list(baseFolder)
-                    .filter(p -> p.getFileName().toString().startsWith("game_state_"))
                     .map(p -> p.getFileName().toString())
-                    .sorted()  // Sortierung kann angepasst werden, z.B. chronologisch
+                    .sorted()
                     .collect(Collectors.toList());
         } catch (IOException e) {
             return Collections.emptyList();

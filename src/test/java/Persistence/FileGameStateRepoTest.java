@@ -84,7 +84,7 @@ public class FileGameStateRepoTest {
     }
 
     @Test
-    void testListGameStateFileNamesAfterSavingMultipleStates() throws InterruptedException {
+    void testListGameStateFileNamesAfterSavingMultipleStates() {
         GameState state1 = new GameState("white", "dummyBoard1", "dummyHistory1", "either","other");
         repository.saveGameState(state1);
         GameState state2 = new GameState("black", "dummyBoard2", "dummyHistory2", "either2","other2");
