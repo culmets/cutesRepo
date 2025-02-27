@@ -32,15 +32,14 @@ public class FileGameStateRepo implements GameStateRepo {
         }
     }
 
-    public static String generateUniqueFileName() {
+    public static String generateUniqueFileName(String activePlayerName, String otherPlayerName) {
         String timestamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-        Random rand = new Random();
-        return "game_record_" + timestamp + "_" + rand.nextInt(100000)+ ".txt";
+        return "game_record_" + timestamp + "_" + activePlayerName + "Und" + otherPlayerName + ".txt";
     }
 
     @Override
     public String saveGameState(GameState state) {
-        String fileName = generateUniqueFileName();
+        String fileName = generateUniqueFileName(state.activePlayerName(), state.otherPlayerName());
         Path filePath = baseFolder.resolve(fileName);
         try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardOpenOption.CREATE_NEW)) {
             writer.write(state.toString());

@@ -29,8 +29,9 @@ public class GameInitializer {
         String basePathLeaderboard = System.getProperty("user.dir") + File.separator + "leaderboard";
         String basePathGameState = System.getProperty("user.dir") + File.separator + "game_state_";
         FileLeaderboardRepo leaderboardRepo = new FileLeaderboardRepo(basePathLeaderboard);
-        GameStateRepo gameStateRepo = new FileGameStateRepo(basePathGameState);
+        FileGameStateRepo gameStateRepo = new FileGameStateRepo(basePathGameState);
         GameRecordRepo gameRecordRepo = new FileGameRecordRepo(basePathGameRecord);
+        Player whitePlayer, blackPlayer;
 
         Scanner scanner = new Scanner(System.in);
 
@@ -60,8 +61,8 @@ public class GameInitializer {
             System.exit(0);
         } else if (choice == 4){
             System.out.println("Bitte wählen Sie einen Spielstand aus:");
-            //Optional<GameState> savedGame = gameStateRepo.loadLatestGameState();
-            Optional<GameState> savedGame = ((FileGameStateRepo) gameStateRepo).loadGameState("game_record_20250226_135859_29301.txt");
+
+            Optional<GameState> savedGame = gameStateRepo.loadGameState("game_record_20250226_135859_29301.txt");
 
             System.out.println(savedGame.isPresent());
             if(savedGame.isPresent()){
@@ -69,9 +70,16 @@ public class GameInitializer {
                 Board board = Board.fromString(loadedState.boardState());
                 MoveHistory history = MoveHistory.fromString(loadedState.moveHistory());
                 String activePlayerColor = loadedState.activePlayer();
+                String activePlayerName = loadedState.activePlayerName();
+                String otherPlayerName = loadedState.otherPlayerName();
 
-                Player whitePlayer = new HumanPlayer("White", "white");
-                Player blackPlayer = new HumanPlayer("Black", "black");
+                if(activePlayerColor.equalsIgnoreCase("white")){
+                    whitePlayer = new HumanPlayer(activePlayerName, "white");
+                    blackPlayer = new HumanPlayer(otherPlayerName, "black");
+                } else {
+                    whitePlayer = new HumanPlayer(otherPlayerName, "white");
+                    blackPlayer = new HumanPlayer(activePlayerName, "black");
+                }
 
                 Game game = new Game(whitePlayer, blackPlayer, new CLIController(), history, board, gameRecordRepo, leaderboardRepo, gameStateRepo);
                 game.setCurrentTurn(activePlayerColor);
@@ -82,7 +90,6 @@ public class GameInitializer {
             System.exit(0);
         }
 
-        Player whitePlayer, blackPlayer;
 
         System.out.print("Name des weißen Spielers: ");
         String whiteName = scanner.nextLine();

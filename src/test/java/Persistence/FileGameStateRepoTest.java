@@ -52,7 +52,7 @@ public class FileGameStateRepoTest {
 
     @Test
     void testSaveAndLoadGameState() {
-        GameState state = new GameState("white", "dummyBoard", "dummyHistory", LocalDateTime.of(2023, 3, 1, 12, 0));
+        GameState state = new GameState("white", "dummyBoard", "dummyHistory", "active","other");
         String fileName = repository.saveGameState(state);
         Optional<GameState> loaded = repository.loadGameState(fileName);
         assertTrue(loaded.isPresent(), "Es sollte ein GameState geladen werden.");
@@ -67,4 +67,6 @@ public class FileGameStateRepoTest {
         Optional<GameState> loaded = repository.loadGameState("doesnt exist");
         assertTrue(loaded.isEmpty(), "Es sollte kein GameState geladen werden, wenn der Ordner leer ist.");
     }
+
+    //stimmen die namen der spieler nach laden noch
 }
