@@ -11,10 +11,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FileGameStateRepoTest {
     private static final String TEST_FOLDER = "test_game_states";
@@ -68,5 +68,29 @@ public class FileGameStateRepoTest {
         assertTrue(loaded.isEmpty(), "Es sollte kein GameState geladen werden, wenn der Ordner leer ist.");
     }
 
+    @Test
+    void testLoadGameStateByFileName() {
+        GameState state = new GameState("white", "dummyBoard", "dummyHistory", "first", "second");
+        repository.saveGameState(state);
+        List<String> names = repository.listGameStateFileNames();
+        assertFalse(names.isEmpty(), "Es sollte mindestens ein gespeicherter Spielstand vorhanden sein.");
+        String fileName = names.getFirst();
+        Optional<GameState> loaded = repository.loadGameState(fileName);
+        assertTrue(loaded.isPresent(), "Der Spielstand sollte anhand des Dateinamens geladen werden können.");
+        GameState loadedState = loaded.get();
+        assertEquals(state.activePlayer(), loadedState.activePlayer(), "Der aktive Spieler muss übereinstimmen.");
+        assertEquals(state.boardState(), loadedState.boardState(), "Der Board-Status muss übereinstimmen.");
+        assertEquals(state.moveHistory(), loadedState.moveHistory(), "Die MoveHistory muss übereinstimmen.");
+    }
+
+    @Test
+    void testListGameStateFileNamesAfterSavingMultipleStates() throws InterruptedException {
+        GameState state1 = new GameState("white", "dummyBoard1", "dummyHistory1", "either","other");
+        repository.saveGameState(state1);
+        GameState state2 = new GameState("black", "dummyBoard2", "dummyHistory2", "either2","other2");
+        repository.saveGameState(state2);
+        List<String> names = repository.listGameStateFileNames();
+        assertEquals(2, names.size(), "Es sollten zwei gespeicherte Spielstände vorhanden sein.");
+    }
     //stimmen die namen der spieler nach laden noch
 }
