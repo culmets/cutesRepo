@@ -3,7 +3,6 @@ package Persistence;
 import Domain.Game.GameState;
 import Domain.Persistence.GameStateRepo;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -52,7 +51,7 @@ public class FileGameStateRepo implements GameStateRepo {
 
 
     private Optional<GameState> readGameStateFromFile(Path filePath) {
-        try (BufferedReader reader = Files.newBufferedReader(filePath)) {
+        try {
             String content = Files.readString(filePath);
             if (content != null && !content.isBlank()) {
                 return Optional.of(GameState.fromString(content));
@@ -83,6 +82,18 @@ public class FileGameStateRepo implements GameStateRepo {
             return Optional.empty();
         }
         return readGameStateFromFile(filePath);
+    }
+
+    @Override
+    public void deleteGameState(String fileName) {
+        Path filePath = baseFolder.resolve(fileName);
+        try {
+            Files.deleteIfExists(filePath);
+            System.out.println("GameState-Datei " + fileName + " wurde gelöscht.");
+        } catch (IOException e) {
+            throw new RuntimeException("Fehler beim Löschen des Spielstands: " + fileName, e);
+        }
+
     }
 }
 
