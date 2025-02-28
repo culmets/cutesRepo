@@ -3,14 +3,12 @@ package Domain.Board;
 import Domain.Exceptions.KingNotFoundException;
 import Domain.Pieces.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Board {
 
     private Map<Position, AbstractChessPiece> board;
+    private Optional<Position> enPassantTarget = Optional.empty();
 
     public Board() {
         this.board = new HashMap<>();
@@ -24,8 +22,14 @@ public class Board {
         }
     }
 
+    public Optional<Position> getEnPassantTarget() {
+        return enPassantTarget;
+    }
 
-    //spieler kann nur seine pieces bewegen implementieren?
+    public void setEnPassantTarget(Position pos) {
+        enPassantTarget = Optional.ofNullable(pos);
+    }
+
     private void initializePieces() {
         board.put(new Position(0, 0), new Rook("white", new Position(0, 0)));
         board.put(new Position(0, 1), new Knight("white", new Position(0, 1)));
@@ -59,7 +63,6 @@ public class Board {
         return board.get(position);
     }
 
-    // hier noch schleife oder try catch machen?
     public boolean movePiece(Position start, Position end, String color) {
         AbstractChessPiece piece = board.get(start);
 
@@ -67,6 +70,30 @@ public class Board {
             System.out.println("No piece at the start position.");
             return false;
         }
+
+        // En Passant
+        if (piece instanceof Pawn) {
+            int rowDiff = Math.abs(end.row() - start.row());
+            if (rowDiff == 2) {
+                int midRow = (start.row() + end.row()) / 2; // schwarz bzw weiß haben andere richtungen
+                setEnPassantTarget(new Position(midRow, start.col()));
+            } else {
+                setEnPassantTarget(null);
+            }
+        } else {
+            setEnPassantTarget(null);
+        }
+
+        if (piece instanceof Pawn && board.get(end) == null) {
+            Optional<Position> enPassant = getEnPassantTarget();
+            if (enPassant.isPresent() && enPassant.get().equals(end)) { // wenn der aktuelle zug ein bauer ist der auf das en passant feld will
+                // Bei einem weißen Bauern: der gegnerische Bauer steht eine Zeile hinter dem enPassant-Ziel.
+                int direction = piece.getColor().equals("white") ? -1 : 1;
+                Position capturedPawnPos = new Position(end.row() + direction, end.col());
+                board.remove(capturedPawnPos);
+            }
+        }
+
 
         if (!isValidMove(start, end, color)) {
             System.out.println("Invalid move for " + piece.getClass().getSimpleName());
@@ -76,6 +103,15 @@ public class Board {
         board.put(end, piece);
         board.remove(start);
         piece.setPosition(end);
+
+        if (piece instanceof Pawn) {
+            int promotionRow = color.equals("white") ? 7 : 0;
+            if (end.row() == promotionRow) {
+                AbstractChessPiece promoted = ((Pawn) piece).promote();
+                board.put(end, promoted);
+                System.out.println("Für " + color + ": Bauer wurde in eine Dame umgewandelt.");
+            }
+        }
         return true;
     }
 
@@ -111,20 +147,8 @@ public class Board {
         return newPos.row() >= 0 && newPos.row() <= 7 && newPos.col() >= 0 && newPos.col() <= 7;
     }
 
-
-    //prüfen ob der König einer Farbe im Schach steht indem alle Pieces der anderen Farbe gecheckt werden
-  /*  public boolean isKingInCheck(String color) {
-        Position kingPosition = findKingPosition(color);
-        for (AbstractChessPiece piece : board.values()) {
-            if (!piece.getColor().equals(color) && piece.getValidMoves(this).contains(kingPosition)) {
-                return true;
-            }
-        }
-        return false;
-    }
-*/
     public boolean isKingInCheck(String color) {
-        Position kingPosition = findKingPosition(color); // Position des Königs finden
+        Position kingPosition = findKingPosition(color);
         return isPositionUnderThreat(kingPosition, color);
     }
 
@@ -162,8 +186,8 @@ public class Board {
     }
 
 
-    // sucht die Figur in der Map die ein König ist und die richtige Farbe hat
-    //hier null vermeiden
+    // sucht die Figur in der Map, die ein König ist und die richtige Farbe hat
+    // wird durch testen von anderen methoden mitgetestet -> kapselung bleibt erhalten
     private Position findKingPosition(String color) {
         for (Map.Entry<Position, AbstractChessPiece> entry : board.entrySet()) {
             if (entry.getValue() instanceof King && entry.getValue().getColor().equals(color)) {
@@ -186,12 +210,12 @@ public class Board {
         while (currentRow != end.row() || currentCol != end.col()) {
             Position currentPosition = new Position(currentRow, currentCol);
             if (getPieceAt(currentPosition) != null) {
-                return false; // wenn was im weg
+                return false; // wenn was im Weg
             }
             currentRow += rowDiff;
             currentCol += colDiff;
         }
-        return true; // wenn nichts im weg
+        return true; // wenn nichts im Weg
     }
 
     public boolean isCheckmate(String color) {
@@ -244,7 +268,7 @@ public class Board {
         List<Position> validMoves = piece.getValidMoves(this);
         if (!validMoves.contains(end)) {
             System.out.println("Zug ist ungültig. (König im Schach o. Ä.)");
-            return false; // zug ungültig
+            return false; // Zug ungültig
         }
         return isKingSafeAfterMove(start, end, color); // letzte prüfung, ob könig im schach steht danach
     }
@@ -257,5 +281,58 @@ public class Board {
         piece.setPosition(position);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        // position|Figurentyp|Farbe
+        for (Map.Entry<Position, AbstractChessPiece> entry : board.entrySet()) {
+            Position pos = entry.getKey();
+            AbstractChessPiece piece = entry.getValue();
+            sb.append(pos.toString())
+                    .append("|")
+                    .append(piece.getClass().getSimpleName())
+                    .append("|")
+                    .append(piece.getColor())
+                    .append("\n");
+        }
+        return sb.toString().trim();
+    }
+    public static Board fromString(String boardString) {
+        Board board = new Board(true);
+        String[] lines = boardString.split("\n");
+        for (String line : lines) {
+            if (line.trim().isEmpty()) continue;
+            String[] parts = line.split("\\|");
+            if (parts.length < 3) continue;
+            Position pos = Position.fromString(parts[0].trim());
+            String pieceType = parts[1].trim();
+            String color = parts[2].trim();
+            AbstractChessPiece piece = null;
+            switch (pieceType.toLowerCase()) {
+                case "pawn":
+                    piece = new Pawn(color, pos);
+                    break;
+                case "knight":
+                    piece = new Knight(color, pos);
+                    break;
+                case "bishop":
+                    piece = new Bishop(color, pos);
+                    break;
+                case "rook":
+                    piece = new Rook(color, pos);
+                    break;
+                case "queen":
+                    piece = new Queen(color, pos);
+                    break;
+                case "king":
+                    piece = new King(color, pos);
+                    break;
+                default:
+                    continue;
+            }
+            board.placePiece(piece, pos);
+        }
+        return board;
+    }
 
 }

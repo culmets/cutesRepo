@@ -1,5 +1,6 @@
 package Application;
 
+import Application.Command.GameCommand;
 import Domain.Board.Position;
 
 public interface Controller {
@@ -12,4 +13,6 @@ public interface Controller {
     void computeMove();
     void saveGame();
     void loadGame();
+
+    GameCommand getCommand();
 }

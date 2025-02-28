@@ -21,8 +21,34 @@ public record Position(int row, int col) {
 
     @Override
     public String toString() {
-        char column = (char) ('a' + row);
-        int row = col + 1;
-        return "" + column + row;
+        char letter = (char) ('a' + col);
+        int number = row + 1;
+        return "" + letter + number;
     }
+
+    public static Position fromString(String s) {
+        if (s == null) {
+            throw new IllegalArgumentException("Ungültiges Positionsformat: null");
+        }
+        s = s.trim().toLowerCase();
+        if (s.length() != 2) {
+            throw new IllegalArgumentException("Ungültiges Positionsformat: " + s);
+        }
+        char colChar = s.charAt(0);
+        char rowChar = s.charAt(1);
+
+        if (colChar < 'a' || colChar > 'h') {
+            throw new IllegalArgumentException("Ungültige Spalte: " + colChar);
+        }
+        if (rowChar < '1' || rowChar > '8') {
+            throw new IllegalArgumentException("Ungültige Reihe: " + rowChar);
+        }
+
+        int col = colChar - 'a';
+        int row = rowChar - '1';
+
+        return new Position(row, col);
+    }
+
+
 }

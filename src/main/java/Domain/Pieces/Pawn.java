@@ -54,6 +54,10 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
                 if (pieceAtDiagonal != null && !pieceAtDiagonal.getColor().equals(this.getColor())) {
                     validMoves.add(diagonalPosition);
                 }
+                else if (pieceAtDiagonal == null && board.getEnPassantTarget().isPresent() //en passant
+                        && board.getEnPassantTarget().get().equals(diagonalPosition)) {
+                    validMoves.add(diagonalPosition);
+                }
             }
         }
         validMoves.removeIf(move -> !board.isKingSafeAfterMove(this.getPosition(), move, this.getColor()));
@@ -72,5 +76,9 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
 
         return (targetPosition.row() == targetRow) &&
                 (targetPosition.col() == getPosition().col() - 1 || targetPosition.col() == getPosition().col() + 1);
+    }
+
+    public AbstractChessPiece promote() { // man könnte noch die Auswahl einer Figur die erstellt wird implementieren
+        return new Queen(getColor(), getPosition());
     }
 }

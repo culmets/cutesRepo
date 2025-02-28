@@ -1,5 +1,8 @@
 package Application;
 
+import Application.Command.GameCommand;
+import Application.Command.MoveCommand;
+import Application.Command.SaveCommand;
 import Domain.Board.Position;
 import Domain.Exceptions.InvalidPositionFormatException;
 
@@ -19,6 +22,28 @@ public class CLIController implements Controller{
     public void endGame() {
         System.out.println("Spiel beendet. Danke fürs Spielen!");
     }
+
+
+    @Override
+    public GameCommand getCommand() {
+        while (true) {
+            System.out.print("Geben Sie die Startposition ein (z.B. e2 oder 'speichern'): ");
+            String inputStart = scanner.nextLine().trim();
+            if (inputStart.equalsIgnoreCase("speichern")) {
+                return new SaveCommand();
+            }
+            try {
+                System.out.print("Geben Sie die Zielposition ein (z.B. e4): ");
+                String inputEnd = scanner.nextLine().trim();
+                Position start = Position.fromString(inputStart);
+                Position end = Position.fromString(inputEnd);
+                return new MoveCommand(start, end);
+            } catch (InvalidPositionFormatException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
 
     @Override
     public Position getMoveStart() {
@@ -79,6 +104,4 @@ public class CLIController implements Controller{
     public void loadGame() {
 
     }
-
-
 }
