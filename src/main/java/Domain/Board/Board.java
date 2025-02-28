@@ -104,7 +104,7 @@ public class Board {
         board.remove(start);
         piece.setPosition(end);
 
-        if (piece instanceof Pawn) {
+        if (piece instanceof Pawn) { //Promotion
             int promotionRow = color.equals("white") ? 7 : 0;
             if (end.row() == promotionRow) {
                 AbstractChessPiece promoted = ((Pawn) piece).promote();
@@ -137,12 +137,6 @@ public class Board {
         System.out.println("    A  B  C  D  E  F  G  H");
     }
 
-    public static void main(String[] args) {
-        Board board = new Board();
-        board.printBoard();
-    }
-
-
     public boolean isWithinBoard(Position newPos) {
         return newPos.row() >= 0 && newPos.row() <= 7 && newPos.col() >= 0 && newPos.col() <= 7;
     }
@@ -163,7 +157,6 @@ public class Board {
 
         Position kingPosition = piece instanceof King ? end : findKingPosition(color);
         boolean kingIsSafe = !isPositionUnderThreat(kingPosition, color);
-     //   boolean kingIsSafe = !isKingInCheck(color);
 
         // macht den Zug rückgängig
         board.put(start, piece);
@@ -187,7 +180,7 @@ public class Board {
 
 
     // sucht die Figur in der Map, die ein König ist und die richtige Farbe hat
-    // wird durch testen von anderen methoden mitgetestet -> kapselung bleibt erhalten
+    // wird durch Testen von anderen Methoden mitgetestet -> Kapselung bleibt erhalten
     private Position findKingPosition(String color) {
         for (Map.Entry<Position, AbstractChessPiece> entry : board.entrySet()) {
             if (entry.getValue() instanceof King && entry.getValue().getColor().equals(color)) {
@@ -259,7 +252,7 @@ public class Board {
         AbstractChessPiece piece = getPieceAt(start);
         if (piece == null || !piece.getColor().equals(color)) {
             System.out.println("Figur des Gegners ausgewählt.");
-            return false; // keine Figur auf startpos oder andersfarbige figur
+            return false; // keine Figur auf start oder andersfarbige figur
         }
         if (!isWithinBoard(end)) {
             System.out.println("Zielposition ist nicht auf dem Brett");

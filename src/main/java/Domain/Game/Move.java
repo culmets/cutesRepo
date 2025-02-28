@@ -6,7 +6,7 @@ public record Move(Position from, Position to, int moveNumber) {
 
     @Override
     public String toString() {
-        // Beispiel: "e2,e4,1"
+        // Format: e2,e4,1
         return from.toString() + "," + to.toString() + "," + moveNumber;
     }
     public static Move fromString(String s) {

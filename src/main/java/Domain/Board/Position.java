@@ -2,7 +2,6 @@ package Domain.Board;
 
 import Domain.Exceptions.InvalidPositionFormatException;
 
-//converted to record class
 public record Position(int row, int col) {
 
     public Position {

@@ -22,7 +22,7 @@ public record GameState(String activePlayer, String boardState, String moveHisto
 
     @Override
     public String toString() {
-        // z. B.: "white;dummyBoard;dummyHistory;name;name"
+        // Format: white;dummyBoard;dummyHistory;name;name
         return activePlayer + ";" + boardState + ";" + moveHistory + ";" + activePlayerName + ";" + otherPlayerName;
     }
 
