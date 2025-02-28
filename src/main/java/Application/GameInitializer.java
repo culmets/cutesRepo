@@ -57,16 +57,17 @@ public class GameInitializer {
                 }
             } else {
                 System.out.println("Ungültige Eingabe. Bitte geben Sie 1, 2, 3 oder 4 ein.");
-                scanner.next(); // Den ungültigen Token verwerfen
+                scanner.next();
             }
         }
         if(choice == 3){
             System.out.println("Leaderboard wird ausgegeben:");
             leaderboardRepo.printLeaderboard();
-            System.exit(0);
+            exit(0);
         } else if (choice == 4){
 
-            Optional<GameState> savedGame = chooseGameState(gameStateRepo);
+            GameStateWrapper wrapper = chooseGameState(gameStateRepo);
+            Optional<GameState> savedGame = wrapper.gameState();
 
             if(savedGame.isPresent()){
                 GameState loadedState = savedGame.get();
@@ -86,11 +87,12 @@ public class GameInitializer {
 
                 Game game = new Game(whitePlayer, blackPlayer, new CLIController(), history, board, gameRecordRepo, leaderboardRepo, gameStateRepo);
                 game.setCurrentTurn(activePlayerColor);
+                game.setFileName(wrapper.fileName());
                 game.startGame();
-                System.exit(0);
+                exit(0);
             }
             System.out.println("Es wurde kein Spielstand gefunden :(");
-            System.exit(0);
+            exit(0);
         }
 
         //Normales Spiel
@@ -111,7 +113,7 @@ public class GameInitializer {
         game.startGame();
     }
 
-    private static Optional<GameState> chooseGameState(FileGameStateRepo gameStateRepo) {
+    private static GameStateWrapper chooseGameState(FileGameStateRepo gameStateRepo) {
         List<String> fileNames = gameStateRepo.listGameStateFileNames();
         System.out.println("Bitte wähle aus den Folgenden Dateien aus, welcher Spielstand weitergespielt werden soll:");
         IntStream.range(0, fileNames.size())
@@ -133,6 +135,6 @@ public class GameInitializer {
                 scanner.next();
             }
         }
-        return gameStateRepo.loadGameState(fileNames.get(choice));
+        return new GameStateWrapper(fileNames.get(choice),gameStateRepo.loadGameState(fileNames.get(choice)));
     }
 }

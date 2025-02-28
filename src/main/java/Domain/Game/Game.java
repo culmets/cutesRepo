@@ -27,7 +27,10 @@ public class Game implements InterfaceGame {
     private final LeaderboardRepository leaderboardRepo;
     private final GameStateRepo gameStateRepo;
 
+    private String fileName = "";
+
     private Player currentPlayer;
+
     private int moveCounter = 0;
 
     public Game(Player whitePlayer, Player blackPlayer, Controller controller, MoveHistory moveHistory, Board board, GameRecordRepo repository, FileLeaderboardRepo leaderboardRepo, GameStateRepo gameStateRepo) {
@@ -80,7 +83,9 @@ public class Game implements InterfaceGame {
         GameRecord record = new GameRecord(whitePlayer.getName(), blackPlayer.getName(), winner, moveHistory.getDemMoves(), LocalDateTime.now());
         recordRepository.saveGameRecord(record);
         leaderboardRepo.updateWin(winner);
-        // gameSTate file löschen
+        if (!fileName.isEmpty()) { // wenn ein alter Spielstand fertig gespielt wurde
+            gameStateRepo.deleteGameState(fileName);
+        }
         controller.endGame();
     }
 
@@ -111,10 +116,14 @@ public class Game implements InterfaceGame {
     }
 
     public void setCurrentTurn(String activePlayerColor) {
-        if(activePlayerColor.equals("white")){
+        if (activePlayerColor.equals("white")) {
             currentPlayer = whitePlayer;
         } else {
             currentPlayer = blackPlayer;
         }
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }
