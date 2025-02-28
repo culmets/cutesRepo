@@ -71,14 +71,14 @@ public class Game implements InterfaceGame {
                     if (board.movePiece(start, end, currentPlayer.getColor())) {
                         //speichern des moves
                         moveCounter++;
-                        Move move = new Move(start, end, moveCounter); // nochmal schaune mit movetype, braucht man das?
+                        Move move = new Move(start, end, moveCounter);
                         moveHistory.addMove(move);
                         validMove = true;
                     }
                 }
             }
             currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
-            isGameOver = isGameOver(currentPlayer); // hier ist schon der nächste wieder dran bzw als current player markiert
+            isGameOver = isGameOver(currentPlayer);
         }
         GameRecord record = new GameRecord(whitePlayer.getName(), blackPlayer.getName(), winner, moveHistory.getDemMoves(), LocalDateTime.now());
         recordRepository.saveGameRecord(record);
@@ -91,14 +91,12 @@ public class Game implements InterfaceGame {
 
     @Override
     public boolean isGameOver(Player currentPlayer) {
-        System.out.println("Checking for checkmate");
         if (board.isCheckmate(currentPlayer.getColor())) {
             Player winner = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer; // wenn currentPlayer schachmatt dann hat der andere nicht currentPlayer gewonnen
             System.out.println("Schachmatt! " + winner.getName() + " hat gewonnen.");
             setWinner(winner.getName());
             return true;
         }
-
         if (board.isStalemate(currentPlayer.getColor())) {
             System.out.println("Patt! Das Spiel endet unentschieden.");
             return true;
@@ -110,17 +108,8 @@ public class Game implements InterfaceGame {
         this.winner = winner;
     }
 
-    @Override
-    public String getWinner() {
-        return winner;
-    }
-
     public void setCurrentTurn(String activePlayerColor) {
-        if (activePlayerColor.equals("white")) {
-            currentPlayer = whitePlayer;
-        } else {
-            currentPlayer = blackPlayer;
-        }
+        currentPlayer = activePlayerColor.equals("white") ? whitePlayer : blackPlayer;
     }
 
     public void setFileName(String fileName) {
