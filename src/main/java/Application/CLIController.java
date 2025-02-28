@@ -89,19 +89,4 @@ public class CLIController implements Controller{
         }
         return new Position(row, col);
     }
-
-    @Override
-    public void computeMove() {
-
-    }
-
-    @Override
-    public void saveGame() {
-
-    }
-
-    @Override
-    public void loadGame() {
-
-    }
 }

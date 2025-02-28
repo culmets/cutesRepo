@@ -40,31 +40,31 @@ public class GameInitializer {
         System.out.println("Schach");
         System.out.println("Wählen Sie den Spielmodus:");
         System.out.println("1 - Zwei menschliche Spieler");
-        System.out.println("2 - Mensch gegen Computer");
+        System.out.println("2 - Spielstand laden");
         System.out.println("3 - Leaderboard anzeigen");
-        System.out.println("4 - Spielstand laden");
 
 
         int choice;
         while (true) {
-            System.out.print("Eingabe 1, 2, 3 oder 4: ");
+            System.out.print("Eingabe 1,2 oder 3: ");
             if (scanner.hasNextInt()) {
                 choice = scanner.nextInt();
                 if (choice >= 1 && choice <= 4) {
                     break;
                 } else {
-                    System.out.println("Ungültige Eingabe. Bitte geben Sie 1, 2, 3 oder 4 ein.");
+                    System.out.println("Ungültige Eingabe. Bitte geben Sie 1, 2, oder 3 ein.");
                 }
             } else {
-                System.out.println("Ungültige Eingabe. Bitte geben Sie 1, 2, 3 oder 4 ein.");
+                System.out.println("Ungültige Eingabe. Bitte geben Sie 1, 2 oder 3 ein.");
                 scanner.next();
             }
         }
+
         if(choice == 3){
             System.out.println("Leaderboard wird ausgegeben:");
             leaderboardRepo.printLeaderboard();
             exit(0);
-        } else if (choice == 4){
+        } else if (choice == 2){
 
             GameStateWrapper wrapper = chooseGameState(gameStateRepo);
             Optional<GameState> savedGame = wrapper.gameState();
@@ -94,20 +94,14 @@ public class GameInitializer {
             System.out.println("Es wurde kein Spielstand gefunden :(");
             exit(0);
         }
-
         //Normales Spiel
-
         System.out.print("Name des weißen Spielers: ");
         String whiteName = scanner.nextLine();
         whitePlayer = new HumanPlayer(whiteName, "white");
 
-        if (choice == 1) {
-            System.out.print("Name des schwarzen Spielers: ");
-            String blackName = scanner.nextLine();
-            blackPlayer = new HumanPlayer(blackName, "black");
-        } else {
-            blackPlayer = new ComputerPlayer("Computer (Schwarz)", "black");
-        }
+        System.out.print("Name des schwarzen Spielers: ");
+        String blackName = scanner.nextLine();
+        blackPlayer = new HumanPlayer(blackName, "black");
 
         Game game = new Game(whitePlayer, blackPlayer, new CLIController(), new MoveHistory(), new Board(), gameRecordRepo, leaderboardRepo, gameStateRepo);
         game.startGame();
@@ -128,10 +122,10 @@ public class GameInitializer {
                 if (choice <= fileNames.size()) {
                     break;
                 } else {
-                    System.out.println("Ungültige Eingabe. Bitte geben Sie 1, 2, 3 oder 4 ein.");
+                    System.out.println("Ungültige Eingabe.");
                 }
             } else {
-                System.out.println("Ungültige Eingabe. Bitte geben Sie 1, 2, 3 oder 4 ein.");
+                System.out.println("Ungültige Eingabe.");
                 scanner.next();
             }
         }
