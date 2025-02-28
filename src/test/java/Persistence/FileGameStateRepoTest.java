@@ -92,5 +92,35 @@ public class FileGameStateRepoTest {
         List<String> names = repository.listGameStateFileNames();
         assertEquals(2, names.size(), "Es sollten zwei gespeicherte Spielstände vorhanden sein.");
     }
-    //stimmen die namen der spieler nach laden noch
+
+    @Test
+    void testPlayerNamesAfterSerialization() {
+        String whitePlayer = "Alice";
+        String blackPlayer = "Bob";
+        String boardState = "dummyBoardState";
+        String moveHistory = "dummyMoveHistory";
+        GameState state = new GameState("white", boardState, moveHistory, whitePlayer, blackPlayer);
+
+        String serialized = state.toString();
+
+        GameState loadedState = GameState.fromString(serialized);
+
+        assertEquals(whitePlayer, loadedState.activePlayerName(), "Der activePlayer muss 'Alice' sein.");
+        assertEquals(blackPlayer, loadedState.otherPlayerName(), "Der BlackPlayer muss 'Bob' sein.");
+    }
+
+    @Test
+    void testDeleteGameState() {
+        GameState state = new GameState("white", "dummyBoard", "dummyHistory", "either","other");
+        repository.saveGameState(state);
+
+        List<String> filesBefore = repository.listGameStateFileNames();
+        assertFalse(filesBefore.isEmpty(), "Es sollte mindestens eine GameState-Datei vorhanden sein.");
+
+        String fileNameToDelete = filesBefore.getFirst();
+        repository.deleteGameState(fileNameToDelete);
+
+        List<String> filesAfter = repository.listGameStateFileNames();
+        assertFalse(filesAfter.contains(fileNameToDelete), "Die GameState-Datei sollte gelöscht worden sein.");
+    }
 }
