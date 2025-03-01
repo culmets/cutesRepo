@@ -9,11 +9,11 @@ public class MoveTest {
 
     @Test
     void testMoveSerialization() {
-        Position start = new Position(4, 1); // e2
-        Position end = new Position(4, 3);   // e4
+        Position start = new Position(4, 1);
+        Position end = new Position(4, 3);
         Move move = new Move(start, end, 1);
 
-        String serialized = move.toString(); // z. B. "e2,e4,1,normal"
+        String serialized = move.toString();
         Move deserialized = Move.fromString(serialized);
 
         assertEquals(move, deserialized, "Deserialisierter Zug muss dem Original entsprechen.");

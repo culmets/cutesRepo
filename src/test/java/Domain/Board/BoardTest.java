@@ -185,7 +185,7 @@ public class BoardTest {
 
     @Test
     void testPositionConversion() {
-        Position pos = new Position(7, 5);  // Erwartet "f8"
+        Position pos = new Position(7, 5);
         assertEquals("f8", pos.toString());
         Position pos2 = Position.fromString("f8");
         assertEquals(pos, pos2);
