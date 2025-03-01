@@ -32,15 +32,26 @@ public class CLIController implements Controller{
             if (inputStart.equalsIgnoreCase("speichern")) {
                 return new SaveCommand();
             }
+            Position start;
             try {
-                System.out.print("Geben Sie die Zielposition ein (z.B. e4): ");
-                String inputEnd = scanner.nextLine().trim();
-                Position start = Position.fromString(inputStart);
-                Position end = Position.fromString(inputEnd);
-                return new MoveCommand(start, end);
-            } catch (InvalidPositionFormatException e) {
-                System.out.println(e.getMessage());
+                start = Position.fromString(inputStart);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Ungültige Startposition: " + e.getMessage());
+                continue;
             }
+
+            System.out.print("Geben Sie die Zielposition ein (z.B. e4): ");
+            String inputEnd = scanner.nextLine().trim();
+
+            Position end;
+            try {
+                end = Position.fromString(inputEnd);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Ungültige Zielposition: " + e.getMessage());
+                continue;
+            }
+
+            return new MoveCommand(start, end);
         }
     }
 
