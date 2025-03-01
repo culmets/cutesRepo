@@ -81,6 +81,7 @@ public class FileLeaderboardRepo implements LeaderboardRepository {
         return data;
     }
 
+    @Override
     public void printLeaderboard() {
         List<LeaderboardEntry> entries = getLeaderboard();
         System.out.printf("%-20s | %s%n", "Spieler", "Siege");
