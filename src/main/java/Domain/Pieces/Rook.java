@@ -46,9 +46,13 @@ public class Rook extends AbstractChessPiece implements ChessPiece {
 
                 Position newPosition = new Position(row, col);
 
+                if (!board.isPathClear(getPosition(), newPosition)) {
+                    break;
+                }
+
                 AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
 
-                if (pieceAtNewPosition == null || pieceAtNewPosition.getColor().equals(this.getColor())) {
+                if (pieceAtNewPosition == null || !pieceAtNewPosition.getColor().equals(this.getColor())) {
                    if (board.isKingSafeAfterMove(this.getPosition(), newPosition, this.getColor())) {
                        validMoves.add(newPosition);
                    }
