@@ -12,12 +12,6 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
     }
 
     @Override
-    public boolean isMoveValid(Position moveFRom, Position moveTo, Board board) {
-        return false;
-    }
-
-    //en passant noch implementieren
-    @Override
     public List<Position> getValidMoves(Board board) {
         List<Position> validMoves = new ArrayList<>();
         int direction = getColor().equals("white") ? 1 : -1;  //weiße bauern ziehen hoch und schwarze runter

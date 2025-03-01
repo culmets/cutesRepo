@@ -28,19 +28,9 @@ public class Bishop extends AbstractChessPiece implements ChessPiece {
     }
 
     @Override
-    public boolean isMoveValid(Position moveFrom, Position moveTo, Board board) {
-        return false;
-    }
-
-    @Override
     public List<Position> getValidMoves(Board board) {
         List<Position> validMoves = new ArrayList<>();
-        int[][] directions = {
-                {1, 1},
-                {1, -1},
-                {-1, 1},
-                {-1, -1}
-        };
+        int[][] directions = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
 
         for (int[] direction : directions) {
             int row = getPosition().row();
@@ -50,9 +40,10 @@ public class Bishop extends AbstractChessPiece implements ChessPiece {
                 row += direction[0];
                 col += direction[1];
 
-                if (row < 0 || row > 7 || col < 0 || col > 7) {
+                if (!Position.isWithinBounds(row, col)) {
                     break;
                 }
+
                 Position newPosition = new Position(row, col);
 
                 if (!board.isPathClear(getPosition(), newPosition)) {
@@ -60,17 +51,13 @@ public class Bishop extends AbstractChessPiece implements ChessPiece {
                 }
                 AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
 
-                if (pieceAtNewPosition == null) {
-                    validMoves.add(newPosition);
-                } else {
-                    if (!pieceAtNewPosition.getColor().equals(this.getColor())) {
+                if (pieceAtNewPosition == null || !pieceAtNewPosition.getColor().equals(this.getColor())) {
+                    if (board.isKingSafeAfterMove(this.getPosition(), newPosition, this.getColor())) {
                         validMoves.add(newPosition);
                     }
-                    break;
                 }
             }
         }
-        validMoves.removeIf(move -> !board.isKingSafeAfterMove(this.getPosition(), move, this.getColor()));
         return validMoves;
     }
 }

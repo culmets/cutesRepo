@@ -25,11 +25,6 @@ public class Knight extends AbstractChessPiece implements ChessPiece{
         return (rowDiff == 2 && colDiff == 1) || (rowDiff == 1 && colDiff == 2);
     }
 
-    @Override //wenn moveTo (endposition der figur) in der liste enthalten ist, ist der Zug valid
-    public boolean isMoveValid(Position moveFrom, Position moveTo, Board board) {
-        return getValidMoves(board).contains(moveTo);
-    }
-
     @Override
     public List<Position> getValidMoves(Board board) {
         List<Position> validMoves = new ArrayList<>();
@@ -42,18 +37,20 @@ public class Knight extends AbstractChessPiece implements ChessPiece{
             int row = getPosition().row() + move[0];
             int col = getPosition().col() + move[1];
 
-            if (row < 0 || row > 7 || col < 0 || col > 7) {
+            if (!Position.isWithinBounds(row, col)) {
                 continue;
             }
+
             Position newPosition = new Position(row, col);
 
             AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
 
             if (pieceAtNewPosition == null || !pieceAtNewPosition.getColor().equals(this.getColor())) {
-                validMoves.add(newPosition);
+                if(board.isKingSafeAfterMove(this.getPosition(), newPosition, this.getColor())) {
+                    validMoves.add(newPosition);
+                }
             }
         }
-        validMoves.removeIf(move -> !board.isKingSafeAfterMove(this.getPosition(), move, this.getColor()));
         return validMoves;
     }
 }

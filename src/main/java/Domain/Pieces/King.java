@@ -24,12 +24,6 @@ public class King extends AbstractChessPiece implements ChessPiece{
         return rowDiff <= 1 && colDiff <= 1;
     }
 
-    @Override
-    public boolean isMoveValid(Position moveFrom, Position moveTo, Board board) {
-        return false;
-    }
-
-    //rochade implementieren
 
     @Override
     public List<Position> getValidMoves(Board board) {
@@ -49,7 +43,7 @@ public class King extends AbstractChessPiece implements ChessPiece{
             int row = getPosition().row() + direction[0];
             int col = getPosition().col() + direction[1];
 
-            if (row < 0 || row > 7 || col < 0 || col > 7) {
+            if (!Position.isWithinBounds(row, col)) {
                 continue;
             }
             Position newPosition = new Position(row, col);

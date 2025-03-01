@@ -24,11 +24,6 @@ public class Rook extends AbstractChessPiece implements ChessPiece {
         return false;
     }
 
-    @Override
-    public boolean isMoveValid(Position moveFrom, Position moveTo, Board board) {
-        return getValidMoves(board).contains(moveTo);
-    }
-
     public List<Position> getValidMoves(Board board) {
         List<Position> validMoves = new ArrayList<>();
         int[][] directions = {
@@ -45,26 +40,21 @@ public class Rook extends AbstractChessPiece implements ChessPiece {
                 row += direction[0];
                 col += direction[1];
 
-                if (row < 0 || row > 7 || col < 0 || col > 7) {
-                    break; // verlasse schleife wenn pos außerhalb von board
+                if (!Position.isWithinBounds(row, col)) {
+                    break;
                 }
 
                 Position newPosition = new Position(row, col);
 
                 AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
 
-                if (pieceAtNewPosition == null) {
-                    validMoves.add(newPosition);
-                } else {
-                    if (!pieceAtNewPosition.getColor().equals(this.getColor())) {
-                        validMoves.add(newPosition);
-                    }
-                    break;
+                if (pieceAtNewPosition == null || pieceAtNewPosition.getColor().equals(this.getColor())) {
+                   if (board.isKingSafeAfterMove(this.getPosition(), newPosition, this.getColor())) {
+                       validMoves.add(newPosition);
+                   }
                 }
             }
         }
-        //move ist endpos -> prüfung ob endpos könig in schach stellt
-        validMoves.removeIf(move -> !board.isKingSafeAfterMove(this.getPosition(), move, this.getColor()));
         return validMoves;
     }
 }
