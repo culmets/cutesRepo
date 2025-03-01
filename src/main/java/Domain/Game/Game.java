@@ -33,7 +33,7 @@ public class Game implements InterfaceGame {
 
     private int moveCounter = 0;
 
-    public Game(Player whitePlayer, Player blackPlayer, Controller controller, MoveHistory moveHistory, Board board, GameRecordRepo repository, FileLeaderboardRepo leaderboardRepo, GameStateRepo gameStateRepo) {
+    public Game(Player whitePlayer, Player blackPlayer, Controller controller, MoveHistory moveHistory, Board board, GameRecordRepo repository, LeaderboardRepository leaderboardRepo, GameStateRepo gameStateRepo) {
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
         this.controller = controller;
