@@ -3,11 +3,8 @@ package Domain.Pieces;
 import Domain.Board.Board;
 import Domain.Board.Position;
 
+import java.util.List;
+
 public interface ChessPiece {
-
-    boolean isMoveValid(Position moveFrom, Position moveTo, Board board);
-
-  // nohcmal überlegen wie machen
-  //  List<Position> getValidMoves(Board board);
-  // lohnt es sich immer alles vor zu berechnen?
+    List<Position> getValidMoves(Board board);
 }

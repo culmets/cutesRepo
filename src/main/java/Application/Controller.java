@@ -1,5 +1,6 @@
 package Application;
 
+import Application.Command.GameCommand;
 import Domain.Board.Position;
 
 public interface Controller {
@@ -8,8 +9,5 @@ public interface Controller {
     void endGame();
     Position getMoveStart();
     Position getMoveEnd();
-
-    void computeMove();
-    void saveGame();
-    void loadGame();
+    GameCommand getCommand();
 }

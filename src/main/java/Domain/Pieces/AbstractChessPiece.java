@@ -1,5 +1,6 @@
 package Domain.Pieces;
 
+import Domain.Board.Board;
 import Domain.Board.Position;
 
 public abstract class AbstractChessPiece implements ChessPiece {
@@ -26,4 +27,7 @@ public abstract class AbstractChessPiece implements ChessPiece {
     }
 
     public abstract String getSymbol();
+
+    public abstract boolean canAttack(Position targetPosition, Board board);
+
 }

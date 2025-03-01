@@ -1,12 +1,10 @@
 package Domain.Game;
 
+import Domain.Player.Player;
+
 public interface InterfaceGame {
 
     void startGame();
 
-    boolean isGameOver();
-
-    String getWinner();
-
-
+    boolean isGameOver(Player currenPlayer);
 }
