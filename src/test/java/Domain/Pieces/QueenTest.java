@@ -62,7 +62,7 @@ public class QueenTest {
     }
 
     @Test
-    void testInvalidKnightMove() {
+    void testInvalidQueenMove() {
         List<Position> validMoves = whiteQueen.getValidMoves(board);
         assertFalse(validMoves.contains(new Position(5, 4)), "Dame sollte nicht wie ein Springer ziehen können.");
     }
@@ -75,7 +75,7 @@ public class QueenTest {
         assertTrue(validMoves.contains(new Position(0, 3)), "Dame sollte Figur die den König bedroht schlagen können");
     }
     @Test
-    void testKingSafetyNoMovesAllowes() {
+    void testKingSafetyNoMovesAllowed() {
         board.placePiece(new Rook("black", new Position(0, 5)), new Position(0, 5));
         List<Position> validMoves = whiteQueen.getValidMoves(board);
         assertTrue(validMoves.isEmpty(), "Dame sollte keinen Zug machen, der den König im Schach lässt.");
