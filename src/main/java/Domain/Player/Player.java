@@ -22,5 +22,4 @@ public abstract class Player {
         return name;
     }
 
-    public abstract void makeMove(Board board, Controller controller);
 }
