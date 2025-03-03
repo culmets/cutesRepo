@@ -25,12 +25,10 @@ import static java.lang.System.exit;
 
 public class GameInitializer {
 
-    // Abhängigkeiten nur als Schnittstellen, nicht als konkrete Klassen
     private final LeaderboardRepository leaderboardRepo;
     private final GameStateRepo gameStateRepo;
     private final GameRecordRepo gameRecordRepo;
 
-    // Konstruktor erhält die Abhängigkeiten als Schnittstellen (Dependency Injection)
     public GameInitializer(LeaderboardRepository leaderboardRepo, GameStateRepo gameStateRepo, GameRecordRepo gameRecordRepo) {
         this.leaderboardRepo = leaderboardRepo;
         this.gameStateRepo = gameStateRepo;
@@ -43,17 +41,14 @@ public class GameInitializer {
         String basePathLeaderboard = System.getProperty("user.dir") + File.separator + "leaderboard";
         String basePathGameState = System.getProperty("user.dir") + File.separator + "game_state_";
 
-        // Instanziierung der konkreten Implementierungen – hier nur einmal zur Laufzeit
         LeaderboardRepository leaderboardRepo = new FileLeaderboardRepo(basePathLeaderboard);
         GameStateRepo gameStateRepo = new FileGameStateRepo(basePathGameState);
         GameRecordRepo gameRecordRepo = new FileGameRecordRepo(basePathGameRecord);
 
-        // Übergabe der Abhängigkeiten als Schnittstellen an den GameInitializer
         GameInitializer initializer = new GameInitializer(leaderboardRepo, gameStateRepo, gameRecordRepo);
         initializer.initializeGame();
     }
 
-    // Auslagerung der Initialisierungslogik in eine Instanzmethode
     private void initializeGame() {
         Scanner scanner = new Scanner(System.in);
 
