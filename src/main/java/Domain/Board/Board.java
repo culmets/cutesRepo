@@ -138,7 +138,7 @@ public class Board {
     }
 
     public boolean isWithinBoard(Position newPos) {
-        return newPos.row() >= 0 && newPos.row() <= 7 && newPos.col() >= 0 && newPos.col() <= 7;
+        return Position.isWithinBounds(newPos.row(), newPos.col());
     }
 
     public boolean isKingInCheck(String color) {
