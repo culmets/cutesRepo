@@ -4,9 +4,10 @@ import Domain.Board.Board;
 import Domain.Board.Position;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class King extends AbstractChessPiece implements ChessPiece{
+public class King extends AbstractChessPiece implements ChessPiece {
     public King(String color, Position position) {
         super(color, position);
     }
@@ -40,22 +41,27 @@ public class King extends AbstractChessPiece implements ChessPiece{
         };
 
         for (int[] direction : directions) {
-            int row = getPosition().row() + direction[0];
-            int col = getPosition().col() + direction[1];
-
-            if (!Position.isWithinBounds(row, col)) {
-                continue;
-            }
-            Position newPosition = new Position(row, col);
-
-            AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
-
-            if (pieceAtNewPosition == null || !pieceAtNewPosition.getColor().equals(this.getColor())) {
-                if(board.isKingSafeAfterMove(this.getPosition(), newPosition, this.getColor())){
-                    validMoves.add(newPosition);
-                }
-            }
+            validMoves.addAll(computeDirectionalMoves(board, direction[0], direction[1]));
         }
         return validMoves;
+    }
+
+    private List<Position> computeDirectionalMoves(Board board, int rowDir, int colDir) {
+        List<Position> moves = new ArrayList<>();
+        int row = getPosition().row() + rowDir;
+        int col = getPosition().col() + colDir;
+
+        if (!Position.isWithinBounds(row, col)) {
+            return Collections.emptyList();
+        }
+        Position newPosition = new Position(row, col);
+
+        AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
+        if (pieceAtNewPosition == null || !pieceAtNewPosition.getColor().equals(this.getColor())) {
+            if (board.isKingSafeAfterMove(getPosition(), newPosition, getColor())) {
+                moves.add(newPosition);
+            }
+        }
+        return moves;
     }
 }

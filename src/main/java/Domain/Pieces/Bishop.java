@@ -33,31 +33,32 @@ public class Bishop extends AbstractChessPiece implements ChessPiece {
         int[][] directions = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
 
         for (int[] direction : directions) {
-            int row = getPosition().row();
-            int col = getPosition().col();
+            validMoves.addAll(computeDirectionalMoves(board, direction[0], direction[1]));
+        }
+        return validMoves;
+    }
 
-            while (true) {
-                row += direction[0];
-                col += direction[1];
-
-                if (!Position.isWithinBounds(row, col)) {
-                    break;
-                }
-
-                Position newPosition = new Position(row, col);
-
-                if (!board.isPathClear(getPosition(), newPosition)) {
-                    break;
-                }
-                AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
-
-                if (pieceAtNewPosition == null || !pieceAtNewPosition.getColor().equals(this.getColor())) {
-                    if (board.isKingSafeAfterMove(this.getPosition(), newPosition, this.getColor())) {
-                        validMoves.add(newPosition);
-                    }
+    private List<Position> computeDirectionalMoves(Board board, int rowDir, int colDir) {
+        List<Position> moves = new ArrayList<>();
+        int row = getPosition().row();
+        int col = getPosition().col();
+        while (true) {
+            row += rowDir;
+            col += colDir;
+            if (!Position.isWithinBounds(row, col)) {
+                break;
+            }
+            Position newPosition = new Position(row, col);
+            if (!board.isPathClear(getPosition(), newPosition)) {
+                break;
+            }
+            AbstractChessPiece pieceAtNewPosition = board.getPieceAt(newPosition);
+            if (pieceAtNewPosition == null || !pieceAtNewPosition.getColor().equals(this.getColor())) {
+                if (board.isKingSafeAfterMove(getPosition(), newPosition, getColor())) {
+                    moves.add(newPosition);
                 }
             }
         }
-        return validMoves;
+        return moves;
     }
 }

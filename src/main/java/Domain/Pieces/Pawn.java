@@ -14,7 +14,15 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
     @Override
     public List<Position> getValidMoves(Board board) {
         List<Position> validMoves = new ArrayList<>();
-        int direction = getColor().equals("white") ? 1 : -1;  //weiße bauern ziehen hoch und schwarze runter
+        validMoves.addAll(computeForwardMoves(board));
+        validMoves.addAll(computeDiagonalMoves(board));
+        validMoves.removeIf(move -> !board.isKingSafeAfterMove(getPosition(), move, getColor()));
+        return validMoves;
+    }
+
+    private List<Position> computeForwardMoves(Board board) {
+        List<Position> moves = new ArrayList<>();
+        int direction = getColor().equals("white") ? 1 : -1;
         int startRow = getColor().equals("white") ? 1 : 6;
         int currentRow = getPosition().row();
         int currentCol = getPosition().col();
@@ -22,41 +30,45 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
 
         if (Position.isWithinBounds(forwardRow, currentCol)) {
             Position forwardPosition = new Position(forwardRow, currentCol);
-            if (board.getPieceAt(forwardPosition) == null) { // feld ist frei
-                validMoves.add(forwardPosition);
-
-                // zwei felder im ersten zug
+            if (board.getPieceAt(forwardPosition) == null) {
+                moves.add(forwardPosition);
                 if (currentRow == startRow) {
                     int doubleForwardRow = currentRow + 2 * direction;
                     if (Position.isWithinBounds(doubleForwardRow, currentCol)) {
                         Position doubleForwardPosition = new Position(doubleForwardRow, currentCol);
                         if (board.getPieceAt(doubleForwardPosition) == null) {
-                            validMoves.add(doubleForwardPosition);
+                            moves.add(doubleForwardPosition);
                         }
                     }
                 }
             }
         }
-        // diagonal schlagen
-        int[] diagonalCols = {currentCol - 1, currentCol + 1}; // Links und rechts
+        return moves;
+    }
+
+    private List<Position> computeDiagonalMoves(Board board) {
+        List<Position> moves = new ArrayList<>();
+        int direction = getColor().equals("white") ? 1 : -1;
+        int currentCol = getPosition().col();
+        int forwardRow = getPosition().row() + direction;
+        int[] diagonalCols = {currentCol - 1, currentCol + 1};
 
         for (int diagCol : diagonalCols) {
             if (Position.isWithinBounds(forwardRow, diagCol)) {
                 Position diagonalPosition = new Position(forwardRow, diagCol);
                 AbstractChessPiece pieceAtDiagonal = board.getPieceAt(diagonalPosition);
-                // nur gegner schlagen
                 if (pieceAtDiagonal != null && !pieceAtDiagonal.getColor().equals(this.getColor())) {
-                    validMoves.add(diagonalPosition);
+                    moves.add(diagonalPosition);
                 }
-                else if (pieceAtDiagonal == null && board.getEnPassantTarget().isPresent() //en passant
-                        && board.getEnPassantTarget().get().equals(diagonalPosition)) {
-                    validMoves.add(diagonalPosition);
+                else if (pieceAtDiagonal == null && board.getEnPassantTarget().isPresent() &&
+                        board.getEnPassantTarget().get().equals(diagonalPosition)) {
+                    moves.add(diagonalPosition);
                 }
             }
         }
-        validMoves.removeIf(move -> !board.isKingSafeAfterMove(this.getPosition(), move, this.getColor()));
-        return validMoves;
+        return moves;
     }
+
 
     @Override
     public String getSymbol() {
