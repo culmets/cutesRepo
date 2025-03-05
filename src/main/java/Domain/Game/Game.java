@@ -10,7 +10,6 @@ import Domain.Persistence.GameStateRepo;
 import Domain.Persistence.LeaderboardRepository;
 import Domain.Player.Player;
 import Domain.Persistence.GameRecordRepo;
-import Persistence.FileLeaderboardRepo;
 
 import java.time.LocalDateTime;
 
@@ -60,7 +59,15 @@ public class Game implements InterfaceGame {
                 GameCommand command = controller.getCommand();
                 if (command instanceof SaveCommand) {
                     System.out.println("Aktuelles Spiel wird gespeichert");
-                    GameState gameState = new GameState(currentPlayer.getColor(), board.toString(), moveHistory.toString(), currentPlayer.getName(), (currentPlayer == whitePlayer) ? blackPlayer.getName() : whitePlayer.getName());
+                    GameState gameState = new GameState.Builder()
+                            .activePlayer(whitePlayer.getColor())
+                            .boardState(board.toString())
+                            .moveHistory(moveHistory.toString())
+                            .activePlayerName(whitePlayer.getName())
+                            .otherPlayerName(blackPlayer.getName())
+                            .build();
+
+                    //GameState gameState = new GameState(currentPlayer.getColor(), board.toString(), moveHistory.toString(), currentPlayer.getName(), (currentPlayer == whitePlayer) ? blackPlayer.getName() : whitePlayer.getName());
                     System.out.println("Aktuelles Spiel gespeichert unter dem Namen: " + gameStateRepo.saveGameState(gameState));
                     System.exit(0);
                 } else if (command instanceof MoveCommand) {
