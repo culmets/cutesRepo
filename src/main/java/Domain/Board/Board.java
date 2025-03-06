@@ -31,32 +31,33 @@ public class Board {
     }
 
     private void initializePieces() {
-        board.put(new Position(0, 0), new Rook("white", new Position(0, 0)));
-        board.put(new Position(0, 1), new Knight("white", new Position(0, 1)));
-        board.put(new Position(0, 2), new Bishop("white", new Position(0, 2)));
-        board.put(new Position(0, 3), new Queen("white", new Position(0, 3)));
-        board.put(new Position(0, 4), new King("white", new Position(0, 4)));
-        board.put(new Position(0, 5), new Bishop("white", new Position(0, 5)));
-        board.put(new Position(0, 6), new Knight("white", new Position(0, 6)));
-        board.put(new Position(0, 7), new Rook("white", new Position(0, 7)));
+        board.put(new Position(0, 0), ChessPieceFactory.createPiece("rook", "white", new Position(0, 0)));
+        board.put(new Position(0, 1), ChessPieceFactory.createPiece("knight", "white", new Position(0, 1)));
+        board.put(new Position(0, 2), ChessPieceFactory.createPiece("bishop", "white", new Position(0, 2)));
+        board.put(new Position(0, 3), ChessPieceFactory.createPiece("queen", "white", new Position(0, 3)));
+        board.put(new Position(0, 4), ChessPieceFactory.createPiece("king", "white", new Position(0, 4)));
+        board.put(new Position(0, 5), ChessPieceFactory.createPiece("bishop", "white", new Position(0, 5)));
+        board.put(new Position(0, 6), ChessPieceFactory.createPiece("knight", "white", new Position(0, 6)));
+        board.put(new Position(0, 7), ChessPieceFactory.createPiece("rook", "white", new Position(0, 7)));
 
         for (int col = 0; col < 8; col++) {
-            board.put(new Position(1, col), new Pawn("white", new Position(1, col)));
+            board.put(new Position(1, col), ChessPieceFactory.createPiece("pawn", "white", new Position(1, col)));
         }
 
-        board.put(new Position(7, 0), new Rook("black", new Position(7, 0)));
-        board.put(new Position(7, 1), new Knight("black", new Position(7, 1)));
-        board.put(new Position(7, 2), new Bishop("black", new Position(7, 2)));
-        board.put(new Position(7, 3), new Queen("black", new Position(7, 3)));
-        board.put(new Position(7, 4), new King("black", new Position(7, 4)));
-        board.put(new Position(7, 5), new Bishop("black", new Position(7, 5)));
-        board.put(new Position(7, 6), new Knight("black", new Position(7, 6)));
-        board.put(new Position(7, 7), new Rook("black", new Position(7, 7)));
+        board.put(new Position(7, 0), ChessPieceFactory.createPiece("rook", "black", new Position(7, 0)));
+        board.put(new Position(7, 1), ChessPieceFactory.createPiece("knight", "black", new Position(7, 1)));
+        board.put(new Position(7, 2), ChessPieceFactory.createPiece("bishop", "black", new Position(7, 2)));
+        board.put(new Position(7, 3), ChessPieceFactory.createPiece("queen", "black", new Position(7, 3)));
+        board.put(new Position(7, 4), ChessPieceFactory.createPiece("king", "black", new Position(7, 4)));
+        board.put(new Position(7, 5), ChessPieceFactory.createPiece("bishop", "black", new Position(7, 5)));
+        board.put(new Position(7, 6), ChessPieceFactory.createPiece("knight", "black", new Position(7, 6)));
+        board.put(new Position(7, 7), ChessPieceFactory.createPiece("rook", "black", new Position(7, 7)));
 
         for (int col = 0; col < 8; col++) {
-            board.put(new Position(6, col), new Pawn("black", new Position(6, col)));
+            board.put(new Position(6, col), ChessPieceFactory.createPiece("pawn", "black", new Position(6, col)));
         }
     }
+
 
 
     public AbstractChessPiece getPieceAt(Position position) {
